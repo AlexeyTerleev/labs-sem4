@@ -1,0 +1,1 @@
+{"accounts": [{"id": 1, "balance": 1500}], "cards": [{"number": 123, "cvv": 422, "date": "08/08", "pin": 1234, "account_id": 1}], "repo": 4000}
