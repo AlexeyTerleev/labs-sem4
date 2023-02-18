@@ -1,1 +1,1 @@
-{"accounts": [{"id": 1, "balance": 1500}], "cards": [{"number": 123, "cvv": 422, "date": "08/08", "pin": 1234, "account_id": 1}], "repo": 4000}
+{"accounts": [{"id": 0, "login": "a-ter", "password": "qwert", "balance": 0}], "cards": [{"number": "00000000", "cvv": "222", "date": "2/2028", "pin": "1234", "account_id": 0}], "repo": 2500, "card_id_tf": 1, "account_id_tf": 1}

@@ -26,7 +26,7 @@ class Screen:
     def input_pin_screen(card: Card) -> bool:
         Screen.print_hello()
         for i in range(5):
-            pin = int(input('Введите PIN-код: '))
+            pin = input('Введите PIN-код: ')
 
             Screen.processing()
             Screen.print_hello()

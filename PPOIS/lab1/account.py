@@ -1,16 +1,22 @@
 
 class Account:
 
-    def __init__(self, num: int = 0, login: str = '', password: str = '', balance: float = 0):
-        self.__id = num
+    id_tf = 0
+    def __init__(self, login: str, password: str, balance: float = 0, id_: int = None):
+
+        if id_ is None:
+            self.__id = Account.id_tf
+            Account.id_tf += 1
+        else:
+            self.__id = id_
+
         self.__login = login
         self.__password = password
         self.__balance = balance
-
     def as_dict(self):
         return {
-            'id': self.id,
-            'name': self.__login,
+            'id': self.__id,
+            'login': self.__login,
             'password': self.__password,
             'balance': self.__balance
         }

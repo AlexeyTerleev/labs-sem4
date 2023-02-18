@@ -45,3 +45,5 @@ class ATM:
                     case 4:
                         self.__access = False
                         break
+                    case _:
+                        ...
