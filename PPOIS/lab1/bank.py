@@ -1,66 +1,32 @@
+from screens import BankScreens
+
 from account import Account
-from card import Card
-
-
 class Bank:
 
     def __init__(self, accounts: list, cards: list):
         self.__accounts = accounts
         self.__cards = cards
-        self.menu()
 
-    def add_account(self):
-        login = input('Придумайте логин: ')
-        while [x.login for x in self.__accounts].count(login):
-            print('Этот логин уже занят, придумайте другой')
-            login = input('Придумайте логин: ')
-        password = input('Придумайте пароль: ')
-        a = Account(login, password)
-        self.__accounts.append(a)
+        self.__access = False
 
-    def get_access(self) -> Account:
-        login = input('Введите логин: ')
-        a = None
-        for x in self.__accounts:
-            if x.login == login:
-                a = x
-        if a is None:
-            raise Exception('unknown account')
-
-        for i in range(5):
-            password = input('Введите пароль: ')
-            if a.get_access(password):
-                print('Доступ разрешен\n', flush=True)
-                return a
-            else:
-                print(f'Неверный пароль\nПопробуйте еще раз (попыток осталось: {5 - (i + 1)})\n')
-
-    def add_card(self, a: Account):
-
-        match input(f'Хотите привязать новую карту к аккаунту {a.login}? (y/n)'):
-            case 'y':
-                pin = input('Введите PIN (4 цифры)')
-                if len(pin) != 4:
-                    raise Exception('invalid value')
-                self.__cards.append(Card(pin, a))
-            case 'n':
-                pass
-            case _:
-                raise Exception('unknown command')
+        self.start()
 
 
-    def menu(self):
+    def start(self) -> None:
         while True:
-            x = int(input("1 - Создать аккаунт\n2 - Привязать карту\n"))
-            match x:
-                case 1:
-                    self.add_account()
-                    self.add_card(self.__accounts[-1])
-                case 2:
-                    self.add_card(self.get_access())
-                case 3:
+            match BankScreens.selection_screen():
+                case '1':
+                    BankScreens.add_account_screen(self.__accounts)
+                    account = self.__accounts[-1]
+                    self.__access = True
+                case '2':
+                    account = BankScreens.find_account_screen(self.__accounts)
+                    self.__access = BankScreens.get_access_screen(account)
+                case '3':
                     break
                 case _:
-                    ...
+                    raise Exception('invalid command')
 
-
+            if self.__access:
+                BankScreens.add_card_screen(account, self.__cards)
+                self.__access = False

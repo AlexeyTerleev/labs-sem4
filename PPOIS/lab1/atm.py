@@ -1,5 +1,7 @@
-from screens import *
+from screens import ATMScreens
 
+from repository import Repository
+from card import Card
 
 class ATM:
 
@@ -11,39 +13,22 @@ class ATM:
 
         self.start()
 
-    def enter_pin(self) -> None:
-        self.__access = Screen.input_pin_screen(self.__card)
-
-    def main_menu(self) -> int:
-        return Screen.selection_screen()
-
-    def put_money(self) -> None:
-        Screen.put_money_screen(self.__card, self.__repository)
-
-    def get_money(self) -> None:
-        Screen.get_money_screen(self.__card, self.__repository)
-
-    def check_balance(self) -> None:
-        Screen.check_balance_screen(self.__card)
-
     def start(self) -> None:
 
-        self.enter_pin()
+        self.__access = ATMScreens.input_pin_screen(self.__card)
 
         if self.__access:
-
             while True:
-
-                x = self.main_menu()
+                x = ATMScreens.selection_screen()
                 match x:
-                    case 1:
-                        self.get_money()
-                    case 2:
-                        self.put_money()
-                    case 3:
-                        self.check_balance()
-                    case 4:
+                    case '1':
+                        ATMScreens.get_money_screen(self.__card, self.__repository)
+                    case '2':
+                        ATMScreens.put_money_screen(self.__card, self.__repository)
+                    case '3':
+                        ATMScreens.check_balance_screen(self.__card)
+                    case '4':
                         self.__access = False
                         break
                     case _:
-                        ...
+                        raise Exception('invalid command')

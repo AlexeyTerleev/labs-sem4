@@ -20,7 +20,7 @@ class Card:
             self.__number = number
 
         if cvv is None:
-            self.__cvv = ''.join([str(randint(0, 9) for i in range(3))])
+            self.__cvv = ''.join(str(randint(0, 9)) for i in range(3))
         else:
             self.__cvv = cvv
 

@@ -27,16 +27,18 @@ def main() -> None:
 
     while True:
         os.system('clear')
-        match int(input('1 - Операции с банкоматом\n2 - Создать счет\n3 - Выход\n')):
-            case 1:
+        match input('1 - Операции с банкоматом\n2 - Регистрация счетов / карт\n3 - Выход\n'):
+            case '1':
                 print('Выберите карту:\n')
                 for i in range(len(cards)):
-                    print(f'{i}) {cards[i].number}')
+                    print(f'{i} - {cards[i].number}')
                 ATM(repository, cards[int(input())])
-            case 2:
+            case '2':
                 Bank(accounts, cards)
-            case 3:
+            case '3':
                 break
+            case _:
+                raise Exception('invalid command')
 
     dct = {
         'accounts': [x.as_dict() for x in accounts],
@@ -53,4 +55,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-'''Добавить регистрацию карт + перевести все в csv и pandas'''
