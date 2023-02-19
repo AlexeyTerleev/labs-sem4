@@ -18,6 +18,16 @@ def processing() -> None:
         os.system('sleep .2')
         print('.', end='', flush=True)
     os.system('sleep .2')
+
+def print_message(message: str, static: bool, delay: float = 1) -> None:
+    print_hello()
+    if static:
+        print(message)
+        input('Для продолжени нажмите любую клавишу ')
+    else:
+        print(message, flush=True)
+        os.system(f'sleep {delay}')
+
 class ATMScreens:
     @staticmethod
     def selection_screen():
@@ -36,22 +46,19 @@ class ATMScreens:
             pin = input('Введите PIN-код: ')
 
             processing()
-            print_hello()
 
             if card.get_access(pin):
-                print('Доступ разрешен\n', flush=True)
-                time.sleep(1)
+                print_message('Доступ разрешен\n', False)
                 return True
             else:
+                print_hello()
                 print(f'Неверный PIN-код\nПопробуйте еще раз (попыток осталось: {5 - (i + 1)})\n')
 
         raise Exception('access error')
 
     @staticmethod
     def check_balance_screen(card: Card):
-        print_hello()
-        print(f'Баланс на карте: {card.account.balance}\n')
-        input('Для продолжени нажмите любую клавишу ')
+        print_message(f'Баланс на карте: {card.account.balance}\n', True)
 
     @staticmethod
     def put_money_screen(card: Card, repo: Repository) -> None:
@@ -64,10 +71,8 @@ class ATMScreens:
         repo.put_money(money)
 
         processing()
-        print_hello()
 
-        print('Операция проведена успешно!\n', flush=True)
-        time.sleep(1)
+        print_message('Операция проведена успешно!\n', False)
 
     @staticmethod
     def get_money_screen(card: Card, repo: Repository) -> None:
@@ -86,10 +91,8 @@ class ATMScreens:
         card.account.decrease_balance(money)
 
         processing()
-        print_hello()
 
-        print('Операция проведена успешно!\n', flush=True)
-        time.sleep(1)
+        print_message('Операция проведена успешно!\n', False)
 
 class BankScreens:
 
@@ -105,13 +108,20 @@ class BankScreens:
 
     @staticmethod
     def add_card_screen(a: Account, cards: list):
-
-        match input(f'Хотите привязать новую карту к счету {a.login}? (y/n)'):
+        print_hello()
+        match input(f'Хотите привязать новую карту к счету {a.login}? (y/n) '):
             case 'y':
-                pin = input('Введите PIN (4 цифры)')
+                pin = input('Введите PIN (4 цифры): ')
                 if len(pin) != 4 or not pin.isdigit():
                     raise Exception('invalid value')
                 cards.append(Card(pin, a))
+
+                processing()
+                print_message(f'Зарегистрирова новая карта:\n\n'
+                      f'\tНомер карты: {cards[-1].number}\n'
+                      f'\tСрок обслуживания до: {cards[-1].date}\n'
+                      f'\tCVV: {cards[-1].cvv}\n', True)
+
             case 'n':
                 pass
             case _:
@@ -120,29 +130,54 @@ class BankScreens:
     @staticmethod
     def find_account_screen(accounts: list) -> Account:
         while True:
+            print_hello()
             login = input('Введите логин: ')
+
+            processing()
+
             for x in accounts:
                 if x.login == login:
                     return x
-            print(f'Неверный логин\nПопробуйте еще раз')
+
+            print_message(f'Счета с таким логином не существует\nПопробуйте еще раз', False)
 
     @staticmethod
     def get_access_screen(account: Account) -> bool:
+
+        print_hello()
+
         for i in range(5):
+
             password = input('Введите пароль: ')
+
+            processing()
+            print_hello()
+
             if account.get_access(password):
                 print('Доступ разрешен\n', flush=True)
                 return True
             else:
-                print(f'Неверный пароль\nПопробуйте еще раз (попыток осталось: {5 - (i + 1)})\n')
+                print(f'Неверный пароль\nПопробуйте еще раз (попыток осталось: {5 - (i + 1)})')
         raise Exception('access error')
 
     @staticmethod
     def add_account_screen(accounts: list):
-        login = input('Придумайте логин: ')
-        while [x.login for x in accounts].count(login):
-            print('Этот логин уже занят, придумайте другой')
+
+        print_hello()
+
+        while True:
             login = input('Придумайте логин: ')
+
+            processing()
+            print_hello()
+
+            if not [x.login for x in accounts].count(login):
+                break
+
+            print('Этот логин уже занят, придумайте другой')
+
         password = input('Придумайте пароль: ')
         a = Account(login, password)
         accounts.append(a)
+        processing()
+        print_message(f'Создан счет:\n\n\tЛогин: {login}\n\tПароль: {password}\n', True)

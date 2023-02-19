@@ -1,3 +1,4 @@
+import screens
 from card import Card
 from account import Account
 from repository import Repository
@@ -27,7 +28,8 @@ def main() -> None:
 
     while True:
         os.system('clear')
-        match input('1 - Операции с банкоматом\n2 - Регистрация счетов / карт\n3 - Выход\n'):
+        screens.print_hello()
+        match input('1 - Операции с банкоматом\n2 - Регистрация счетов / карт\n3 - Выход\n\n'):
             case '1':
                 print('Выберите карту:\n')
                 for i in range(len(cards)):
