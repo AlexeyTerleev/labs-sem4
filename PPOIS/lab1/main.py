@@ -31,11 +31,23 @@ def main() -> None:
         screens.print_hello()
         match input('1 - Операции с банкоматом\n2 - Регистрация счетов / карт\n3 - Выход\n\n'):
             case '1':
+
+                os.system('clear')
+                screens.print_hello()
+
+                if not len(cards):
+                    print('Для начала нужно зарегистрировать хотя бы одну карту!\n')
+                    os.system('sleep 1')
+                    continue
+
                 print('Выберите карту:\n')
                 for i in range(len(cards)):
                     print(f'{i} - {cards[i].number}')
+                print()
                 ATM(repository, cards[int(input())])
             case '2':
+                os.system('clear')
+                screens.print_hello()
                 Bank(accounts, cards)
             case '3':
                 break

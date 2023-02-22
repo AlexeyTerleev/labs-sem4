@@ -32,11 +32,10 @@ class ATMScreens:
     @staticmethod
     def selection_screen():
         print_hello()
-        x = input('Выберите операцию:\n'
-                         '1 - Снять деньги\n'
-                         '2 - Положить деньги\n'
-                         '3 - Проверить баланс\n'
-                         '4 - Назад\n')
+        x = input('1 - Снять деньги\n'
+                  '2 - Положить деньги\n'
+                  '3 - Проверить баланс\n'
+                  '4 - Назад\n\n')
         processing()
         return x
     @staticmethod
@@ -99,10 +98,9 @@ class BankScreens:
     @staticmethod
     def selection_screen() -> str:
         print_hello()
-        x = input('Выберите операцию:\n'
-                '1 - Создать счет\n'
+        x = input('1 - Создать счет\n'
                 '2 - Привязать карту\n'
-                '3 - Назад\n')
+                '3 - Назад\n\n')
         processing()
         return x
 
