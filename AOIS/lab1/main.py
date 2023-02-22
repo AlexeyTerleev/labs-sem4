@@ -50,7 +50,7 @@ def addition_binary2reverse_binary(lst: list, length: int = 16) -> list:
     if not lst[0]:
         return lst.copy()
 
-    return addition(lst, [1 for x in range(length)]) if lst[0] else lst.copy()
+    return addition(lst, [1] * length) if lst[0] else lst.copy()
 
 
 def reverse_binary2binary(lst: list) -> list:
@@ -92,7 +92,7 @@ def mult(a: list, b: list, length: int = 16) -> list:
 
     while b != get_binary(0, length):
         out = addition(a, out)
-        b = addition(b, [1 for x in range(length)])
+        b = addition(b, [1] * length)
 
     out[0] = 0 if flag else 1
 
@@ -146,10 +146,11 @@ def get_binary_float(x: float) -> list:
     return (lst_mantissa + lst_exp[::-1] + [sign])[::-1]
 
 
-#-2.55, 3. => -255 * 10 ^ -2, 3 * 10 ^ 1 => -255 * 10 ^ -2, 300 * 10 ^ -2
 def float_addition(a: list, b: list):
-
-    if more_or_equal(b[1:9], a[1:9]):
+    sign = a[1] == b[1]
+    if more_or_equal(b[1:9], a[1:9]) and ((a[1] != b[1]) or (a[1] == 0)):
+        a, b = b, a
+    elif not more_or_equal(b[1:9], a[1:9]):
         a, b = b, a
 
     while a[1:9] != b[1:9]:
@@ -175,11 +176,34 @@ def binary_float2float(x: list):
 
 
 def main():
-    x, y = 5, 4  # 4, 5 //1056
+    x, y = 13, 25
 
-    print(binary_float2float(float_addition(get_binary_float(2.55), get_binary_float(-3.))))
-    '''float_addition(Float(mantissa=get_binary(x), ind=get_binary(-1)),
-                   Float(mantissa=get_binary(y), ind=get_binary(-2)))'''
+    print(f'''
+        {x} + {y} = {binary2int(sum_bin(get_binary(x), get_binary(y)))}
+        {x} - {y} = {binary2int(sum_bin(get_binary(x), get_binary(-y)))}
+        -{x} + {y} = {binary2int(sum_bin(get_binary(-x), get_binary(y)))}
+        -{x} - {y} = {binary2int(sum_bin(get_binary(-x), get_binary(-y)))} \n
+        {x} * {y} = {binary2int(mult(get_binary(x), get_binary(y)))}
+        {x} * (-{y}) = {binary2int(mult(get_binary(x), get_binary(-y)))}
+        (-{x}) * {y} = {binary2int(mult(get_binary(-x), get_binary(y)))}
+        (-{x}) * (-{y}) = {binary2int(mult(get_binary(-x), get_binary(-y)))} \n
+        {x} / {y} = {binary2int(division(get_binary(x), get_binary(y)))} 
+        {x} / (-{y}) = {binary2int(division(get_binary(x), get_binary(-y)))} 
+        (-{x}) / {y} = {binary2int(division(get_binary(-x), get_binary(y)))} 
+        (-{x}) / (-{y}) = {binary2int(division(get_binary(-x), get_binary(-y)))} \n
+        {x * 0.1} + {y * 0.01} = {binary_float2float(
+            float_addition(get_binary_float(x * 0.1), get_binary_float(y * 0.01))
+        )}
+        -{x * 0.1} + {y * 0.01} = {binary_float2float(
+            float_addition(get_binary_float(-x * 0.1), get_binary_float(y * 0.01))
+        )}
+        {x * 0.1} - {y * 0.01} = {binary_float2float(
+            float_addition(get_binary_float(x * 0.1), get_binary_float(-y * 0.01))
+        )}
+        -{x * 0.1} - {y * 0.01} = {binary_float2float(
+            float_addition(get_binary_float(-x * 0.1), get_binary_float(-y * 0.01))
+        )}
+    ''')
 
 
 if __name__ == '__main__':
