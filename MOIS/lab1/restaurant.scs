@@ -1,5 +1,6 @@
 restaurant=[*
 	sc_node_struct->section_subject_domain_of_restaurant;;
+	subject_domain_of_restaurant<-subject_domain;;
 
 	section_subject_domain_of_restaurant<=nrel_section_decomposition:{
 		section_subject_domain_of_kitchen(*<-sc_node_struct;;*);
@@ -10,6 +11,7 @@ restaurant=[*
 	};;
 
 	section_subject_domain_of_restaurant->rrel_key_sc_element:subject_domain_of_restaurant(*<-sc_node_struct;;*);
+	concept_restaurant(*<-sc_node_class;;*);
 	concept_room(*<-sc_node_class;;*);
 	concept_kitchen(*<-sc_node_class;;*);
 	concept_hall(*<-sc_node_class;;*);
@@ -21,6 +23,12 @@ restaurant=[*
     nrel_spaces(*<-sc_node_norole_relation;;*);
     nrel_specialization(*<-sc_node_norole_relation;;*);
 	nrel_location(*<-sc_node_norole_relation;;*);;
+
+	subject_domain_of_restaurant->rrel_explored_relation:
+		nrel_spaces;
+		nrel_specialization;
+		nrel_location;;
+
 	
 	section_subject_domain_of_restaurant => nrel_main_idtf:
 		[Раздел.Предметная область ресторан] (* <- lang_ru;; *);;
@@ -31,7 +39,7 @@ restaurant=[*
 	section_subject_domain_of_restaurant<-non_atomic_section;;
 
 	subject_domain_of_restaurant => nrel_main_idtf:
-        	[Предметная область ресторан] (* <- lang_ru;; *);;
+        [Предметная область ресторан] (* <- lang_ru;; *);;
     
 	subject_domain_of_restaurant => nrel_main_idtf:
 		[Subject domain of restaurant] (* <- lang_en;; *);;
@@ -41,18 +49,16 @@ restaurant=[*
 		subject_domain_of_hall(*<-sc_node_struct;;*);	
 		subject_domain_of_service_staff(*<-sc_node_struct;;*);
 		subject_domain_of_menu(*<-sc_node_struct;;*);
-		subject_domain_of_food(*<-sc_node_struct;;*);;
+		subject_domain_of_food(*<-sc_node_struct;;*);
+		subject_domain_of_catering_place(*<-sc_node_struct;;*);;
 
-	subject_domain_of_restaurant<=nrel_private_subject_domain:subject_domain_of_catering_place(*<-sc_node_struct;;*);;
+	subject_domain_of_restaurant->rrel_not_maximum_studied_object_class:
+		concept_menu;
+		concept_service_staff;
+		concept_food;;
 
-	subject_domain_of_restaurant->rrel_maximum_studied_object_class:concept_menu;;
-
-	subject_domain_of_restaurant->rrel_explored_relation:
-		nrel_spaces;
-		nrel_specialization;
-		nrel_location;;
-
-	subject_domain_of_restaurant<-subject_domain;;
+	concept_restaurant<-rrel_maximum_studied_object_class:subject_domain_of_restaurant;;
+	
 *];;		
 
 

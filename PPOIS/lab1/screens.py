@@ -76,6 +76,11 @@ class ATMScreens:
     @staticmethod
     def get_money_screen(card: Card, repo: Repository) -> None:
         print_hello()
+
+        if not card.account.balance:
+            print_message('Для начала нужно пополнить баланс!\n', False)
+            return
+
         print(f'Остаток на счете: {card.account.balance}\nДоступно к обналичиванию: {repo.money}')
 
         money = int(input('Введите сумму для вывода: '))
