@@ -78,9 +78,14 @@ def more_or_equal(a: list, b: list) -> bool:
     if a[0] != b[0]:
         return not a[0]
 
-    for i in range(1, len(a)):
-        if a[i] != b[i]:
-            return a[i]
+    if a[0]:
+        for i in range(1, len(a)):
+            if a[i] != b[i]:
+                return not a[i]
+    else:
+        for i in range(1, len(a)):
+            if a[i] != b[i]:
+                return a[i]
     return True
 
 
@@ -134,11 +139,12 @@ def get_binary_float(x: float) -> list:
     except ValueError:
         mantissa = int(x)
 
-    if int(x) == x:
+    if int(mantissa) == x:
         exp = 0
         while mantissa % 10 == 0:
             mantissa //= 10
             exp += 1
+
     else:
         exp = str(x).find('.') - (len(str(x)) - 1)
 
@@ -156,9 +162,7 @@ def get_binary_float(x: float) -> list:
 
 def float_addition(a: list, b: list):
 
-    if more_or_equal(b[1:9], a[1:9]) and ((a[1] != b[1]) or (a[1] == 0)):
-        a, b = b, a
-    elif not more_or_equal(b[1:9], a[1:9]):
+    if more_or_equal(b[1:9], a[1:9]):
         a, b = b, a
 
     while a[1:9] != b[1:9]:
@@ -184,71 +188,65 @@ def binary_float2float(x: list):
 
 
 def main():
-    x, y = 13, 25
 
-    print(f'''
-        Представление числа {x} в бинарном коде:
-            Прямое - {''.join([str(i) for i in get_binary(x)])}
-            Обратное - {''.join([str(i) for i in get_reverse_binary(x)])}
-            Дополнительное - {''.join([str(i) for i in get_addition_binary(x)])}
-        
-        Представление числа {-x} в бинарном коде:
-            Прямое - {''.join([str(i) for i in get_binary(-x)])}
-            Обратное - {''.join([str(i) for i in get_reverse_binary(-x)])}
-            Дополнительное - {''.join([str(i) for i in get_addition_binary(-x)])}
-            
-        Представление числа {y} в бинарном коде:
-            Прямое - {''.join([str(i) for i in get_binary(y)])}
-            Обратное - {''.join([str(i) for i in get_reverse_binary(y)])}
-            Дополнительное - {''.join([str(i) for i in get_addition_binary(y)])}
-        
-        Представление числа {-y} в бинарном коде:
-            Прямое - {''.join([str(i) for i in get_binary(-y)])}
-            Обратное - {''.join([str(i) for i in get_reverse_binary(-y)])}
-            Дополнительное - {''.join([str(i) for i in get_addition_binary(-y)])}
-            
+    match input('1 - Операции с целыми\n2 - Операции с дробными\n'):
+        case '1':
+            x = int(input("Введите первое число: "))
+            y = int(input("Введите второе число: "))
+
+            print(f'''
+                Представление числа {x} в бинарном коде:
+                    Прямое - {''.join([str(i) for i in get_binary(x)])}
+                    Обратное - {''.join([str(i) for i in get_reverse_binary(x)])}
+                    Дополнительное - {''.join([str(i) for i in get_addition_binary(x)])}
                 
-        {x} + {y} = {binary2int(sum_bin(get_binary(x), get_binary(y)))}
-        {x} - {y} = {binary2int(sum_bin(get_binary(x), get_binary(-y)))}
-        -{x} + {y} = {binary2int(sum_bin(get_binary(-x), get_binary(y)))}
-        -{x} - {y} = {binary2int(sum_bin(get_binary(-x), get_binary(-y)))}
-        
-        {x} * {y} = {binary2int(mult(get_binary(x), get_binary(y)))}
-        {x} * (-{y}) = {binary2int(mult(get_binary(x), get_binary(-y)))}
-        (-{x}) * {y} = {binary2int(mult(get_binary(-x), get_binary(y)))}
-        (-{x}) * (-{y}) = {binary2int(mult(get_binary(-x), get_binary(-y)))}
-        
-        {y} / {x} = {binary2int(division(get_binary(y), get_binary(x)))} 
-        {y} / (-{x}) = {binary2int(division(get_binary(y), get_binary(-x)))} 
-        (-{y}) / {x} = {binary2int(division(get_binary(-y), get_binary(x)))} 
-        (-{y}) / (-{x}) = {binary2int(division(get_binary(-y), get_binary(-x)))}
-        
-        {x * 0.1} + {y * 0.01} = {binary_float2float(
-            float_addition(get_binary_float(x * 0.1), get_binary_float(y * 0.01))
-        )}
-        -{x * 0.1} + {y * 0.01} = {binary_float2float(
-            float_addition(get_binary_float(-x * 0.1), get_binary_float(y * 0.01))
-        )}
-        {x * 0.1} - {y * 0.01} = {binary_float2float(
-            float_addition(get_binary_float(x * 0.1), get_binary_float(-y * 0.01))
-        )}
-        -{x * 0.1} - {y * 0.01} = {binary_float2float(
-            float_addition(get_binary_float(-x * 0.1), get_binary_float(-y * 0.01))
-        )}
-        
-        {x * pow(10, 4)} + {y * pow(10, 5)} = {binary_float2float(
-            float_addition(get_binary_float(x * pow(10, 4)), get_binary_float(y * pow(10, 5)))
-        )}
-        -{x * pow(10, 4)} + {y * pow(10, 5)} = {binary_float2float(
-            float_addition(get_binary_float(-x * pow(10, 4)), get_binary_float(y * pow(10, 5)))
-        )}
-        {x * pow(10, 4)} - {y * pow(10, 5)} = {binary_float2float(
-            float_addition(get_binary_float(x * pow(10, 4)), get_binary_float(-y * pow(10, 5)))
-        )}
-        -{x * pow(10, 4)} - {y * pow(10, 5)} = {binary_float2float(
-            float_addition(get_binary_float(-x * pow(10, 4)), get_binary_float(-y * pow(10, 5)))
-        )}
-    ''')
+                Представление числа {-x} в бинарном коде:
+                    Прямое - {''.join([str(i) for i in get_binary(-x)])}
+                    Обратное - {''.join([str(i) for i in get_reverse_binary(-x)])}
+                    Дополнительное - {''.join([str(i) for i in get_addition_binary(-x)])}
+                    
+                Представление числа {y} в бинарном коде:
+                    Прямое - {''.join([str(i) for i in get_binary(y)])}
+                    Обратное - {''.join([str(i) for i in get_reverse_binary(y)])}
+                    Дополнительное - {''.join([str(i) for i in get_addition_binary(y)])}
+                
+                Представление числа {-y} в бинарном коде:
+                    Прямое - {''.join([str(i) for i in get_binary(-y)])}
+                    Обратное - {''.join([str(i) for i in get_reverse_binary(-y)])}
+                    Дополнительное - {''.join([str(i) for i in get_addition_binary(-y)])}
+                    
+                        
+                {x} + {y} = {binary2int(sum_bin(get_binary(x), get_binary(y)))}
+                {x} - {y} = {binary2int(sum_bin(get_binary(x), get_binary(-y)))}
+                -{x} + {y} = {binary2int(sum_bin(get_binary(-x), get_binary(y)))}
+                -{x} - {y} = {binary2int(sum_bin(get_binary(-x), get_binary(-y)))}
+                
+                {x} * {y} = {binary2int(mult(get_binary(x), get_binary(y)))}
+                {x} * (-{y}) = {binary2int(mult(get_binary(x), get_binary(-y)))}
+                (-{x}) * {y} = {binary2int(mult(get_binary(-x), get_binary(y)))}
+                (-{x}) * (-{y}) = {binary2int(mult(get_binary(-x), get_binary(-y)))}
+                
+                {y} / {x} = {binary2int(division(get_binary(y), get_binary(x)))} 
+                {y} / (-{x}) = {binary2int(division(get_binary(y), get_binary(-x)))} 
+                (-{y}) / {x} = {binary2int(division(get_binary(-y), get_binary(x)))} 
+                (-{y}) / (-{x}) = {binary2int(division(get_binary(-y), get_binary(-x)))}
+            ''')
+        case '2':
+            x = float(input("Введите первое число: "))
+            y = float(input("Введите второе число: "))
+            print(f'''
+            {x} + {y} = {binary_float2float(
+                float_addition(get_binary_float(x), get_binary_float(y))
+            )}
+            -{x} + {y} = {binary_float2float(
+                float_addition(get_binary_float(-x), get_binary_float(y))
+            )}
+            {x} - {y} = {binary_float2float(
+                float_addition(get_binary_float(x), get_binary_float(-y))
+            )}
+            -{x} - {y} = {binary_float2float(
+                float_addition(get_binary_float(-x), get_binary_float(-y))
+            )}''')
 
 
 if __name__ == '__main__':
