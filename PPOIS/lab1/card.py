@@ -1,6 +1,7 @@
 from account import Account
 import datetime
 from random import randint
+
 class Card:
 
     id_tf = 0

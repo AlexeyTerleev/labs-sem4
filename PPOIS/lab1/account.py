@@ -1,4 +1,3 @@
-
 class Account:
 
     id_tf = 0
@@ -13,6 +12,7 @@ class Account:
         self.__login = login
         self.__password = password
         self.__balance = balance
+
     def as_dict(self):
         return {
             'id': self.__id,

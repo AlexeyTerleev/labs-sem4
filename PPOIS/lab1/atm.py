@@ -1,5 +1,3 @@
-from screens import ATMScreens
-
 from repository import Repository
 from card import Card
 
@@ -50,6 +48,7 @@ class ATM:
 
         if not self.inserted:
             print(f'Карты {card_num} не существует!')
+
     def extract_card(self):
 
         if not self.__inserted:
@@ -64,7 +63,6 @@ class ATM:
         self.__card = None
 
         print(f'Карта {card.number} была извлечена')
-
 
     def input_pin(self, pin: str):
 
@@ -156,24 +154,3 @@ class ATM:
         self.__card.account.decrease_balance(money)
 
         print('Операция проведена успешно!')
-
-
-    def start(self) -> None:
-
-        self.__access = self.__inserted and ATMScreens.input_pin_screen(self.__card)
-
-        if self.__access:
-            while True:
-                x = ATMScreens.selection_screen()
-                match x:
-                    case '1':
-                        ATMScreens.get_money_screen(self.__card, self.__repository)
-                    case '2':
-                        ATMScreens.put_money_screen(self.__card, self.__repository)
-                    case '3':
-                        ATMScreens.check_balance_screen(self.__card)
-                    case '4':
-                        self.__access = False
-                        break
-                    case _:
-                        raise Exception('invalid command')
