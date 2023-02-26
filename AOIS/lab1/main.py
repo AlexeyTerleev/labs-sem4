@@ -1,253 +1,261 @@
-def get_binary(x: int, length: int = 16) -> list:
-    lst, sign = [], 0
+import constant
 
-    if x < 0:
-        x *= -1
+
+def get_binary(num_int: int, length: int = constant.INT_LENGTH) -> list:
+    out, sign = [], 0
+
+    if num_int < 0:
+        num_int *= -1
         sign = 1
 
-    while x > 0:
-        lst.append(x % 2)
-        x = x // 2
-    while len(lst) < length - 1:
-        lst.append(0)
-    lst.append(sign)
+    while num_int > 0:
+        out.append(num_int % constant.BINARY_BASE)
+        num_int = num_int // constant.BINARY_BASE
+    while len(out) < length - 1:
+        out.append(0)
+    out.append(sign)
 
-    return lst[::-1]
+    return out[::-1]
 
 
-def binary2addition_binary(lst: list, length: int = 16) -> list:
-    if not lst[0]:
-        return lst.copy()
+def binary2addition_binary(num_bin: list, length: int = constant.INT_LENGTH) -> list:
+    if not num_bin[0]:
+        return num_bin.copy()
 
-    out = [lst[0]]
+    out = [num_bin[0]]
 
-    for i in range(1, len(lst)):
-        out.append(0) if lst[i] else out.append(1)
+    for i in range(1, len(num_bin)):
+        out.append(0) if num_bin[i] else out.append(1)
 
     out = addition(out, get_binary(1, length))
 
     return out
 
 
-def binary2reverse_binary(lst: list) -> list:
-    if not lst[0]:
-        return lst.copy()
+def binary2reverse_binary(num_bin: list) -> list:
+    if not num_bin[0]:
+        return num_bin.copy()
 
-    out = [int(not x) for x in lst]
+    out = [int(not x) for x in num_bin]
     out[0] = int(not out[0])
     return out
 
 
-def get_reverse_binary(x: int, length: int = 16) -> list:
-    return binary2reverse_binary(get_binary(x, length))
+def get_reverse_binary(num_int: int, length: int = constant.INT_LENGTH) -> list:
+    return binary2reverse_binary(get_binary(num_int, length))
 
 
-def get_addition_binary(x: int, length: int = 16) -> list:
-    return binary2addition_binary(get_binary(x, length), length)
+def get_addition_binary(num_int: int, length: int = constant.INT_LENGTH) -> list:
+    return binary2addition_binary(get_binary(num_int, length), length)
 
 
-def addition_binary2reverse_binary(lst: list, length: int = 16) -> list:
-    if not lst[0]:
-        return lst.copy()
+def addition_binary2reverse_binary(num_addition_bin: list, length: int = constant.INT_LENGTH) -> list:
+    if not num_addition_bin[0]:
+        return num_addition_bin.copy()
 
-    return addition(lst, [1] * length) if lst[0] else lst.copy()
-
-
-def reverse_binary2binary(lst: list) -> list:
-    return binary2reverse_binary(lst)
+    return addition(num_addition_bin, [1] * length) if num_addition_bin[0] else num_addition_bin.copy()
 
 
-def addition(a: list, b: list) -> list:
+def reverse_binary2binary(num_reverse_bin: list) -> list:
+    return binary2reverse_binary(num_reverse_bin)
+
+
+def addition(first: list, second: list) -> list:
     out, flag = [], False
 
-    for i in range(len(a), 0, -1):
-        if (not a[i - 1] and not b[i - 1] and not flag) or \
-                (((a[i - 1] and not b[i - 1]) or (not a[i - 1] and b[i - 1])) and flag):
+    for i in range(len(first), 0, -1):
+        if (not first[i - 1] and not second[i - 1] and not flag) or \
+                (((first[i - 1] and not second[i - 1]) or (not first[i - 1] and second[i - 1])) and flag):
             out.append(0)
-        elif (a[i - 1] and b[i - 1] and flag) or \
-                (((a[i - 1] and not b[i - 1]) or (not a[i - 1] and b[i - 1])) and not flag):
+        elif (first[i - 1] and second[i - 1] and flag) or \
+                (((first[i - 1] and not second[i - 1]) or (not first[i - 1] and second[i - 1])) and not flag):
             out.append(1)
-        elif (not a[i - 1] and not b[i - 1] and flag) or (a[i - 1] and b[i - 1] and not flag):
+        elif (not first[i - 1] and not second[i - 1] and flag) or (first[i - 1] and second[i - 1] and not flag):
             out.append(int(flag))
             flag = not flag
 
     return out[::-1]
 
 
-def more_or_equal(a: list, b: list) -> bool:
-    if a[0] != b[0]:
-        return not a[0]
+def more_or_equal(first: list, second: list) -> bool:
+    if first[0] != second[0]:
+        return not first[0]
 
-    if a[0]:
-        for i in range(1, len(a)):
-            if a[i] != b[i]:
-                return not a[i]
+    if first[0]:
+        for i in range(1, len(first)):
+            if first[i] != second[i]:
+                return not first[i]
     else:
-        for i in range(1, len(a)):
-            if a[i] != b[i]:
-                return a[i]
+        for i in range(1, len(first)):
+            if first[i] != second[i]:
+                return first[i]
     return True
 
 
-def mult(a: list, b: list, length: int = 16) -> list:
+def mult(first: list, second: list, length: int = constant.INT_LENGTH) -> list:
     out = get_binary(0, length)
 
-    flag = (a[0] == b[0])
-    a[0], b[0] = 0, 0
+    flag = (first[0] == second[0])
+    first[0], second[0] = 0, 0
 
-    while b != get_binary(0, length):
-        out = addition(a, out)
-        b = addition(b, [1] * length)
+    while second != get_binary(0, length):
+        out = addition(first, out)
+        second = addition(second, [1] * length)
 
     out[0] = 0 if flag else 1
 
     return out
 
 
-def division(a: list, b: list) -> list:
+def division(first: list, second: list) -> list:
     out = get_binary(0)
 
-    flag = (a[0] == b[0])
-    a[0], b[0] = 0, 0
+    sign = (first[0] == second[0])
+    first[0], second[0] = 0, 0
 
-    while more_or_equal(a, b):
-        b[0] = 1
-        a = addition(a, binary2addition_binary(b))
+    while more_or_equal(first, second):
+        second[0] = 1
+        first = addition(first, binary2addition_binary(second))
         out = addition(out, get_binary(1))
-        b[0] = 0
+        second[0] = 0
 
-    return [0] + out if flag else [1] + out
+    return [int(not sign)] + out
 
 
-def sum_bin(a: list, b: list, length: int = 16) -> list:
-    out = addition(binary2addition_binary(a, length), binary2addition_binary(b, length))
+def sum_bin(first: list, second: list, length: int = constant.INT_LENGTH) -> list:
+    out = addition(binary2addition_binary(first, length), binary2addition_binary(second, length))
     return reverse_binary2binary(addition_binary2reverse_binary(out, length))
 
 
-def get_binary_float(x: float) -> list:
+def get_binary_float(num_float: float) -> list:
     sign = 0
-    if x < 0:
-        x *= -1
+    if num_float < 0:
+        num_float *= -1
         sign = 1
 
     try:
-        per_dot, after_dot = str(x).split(".")
+        per_dot, after_dot = str(num_float).split(".")
         if int(after_dot):
-            mantissa = int(''.join([per_dot, after_dot]))
+            mantissa_int = int(''.join([per_dot, after_dot]))
         else:
-            mantissa = int(x)
+            mantissa_int = int(num_float)
     except ValueError:
-        mantissa = int(x)
+        mantissa_int = int(num_float)
 
-    if int(mantissa) == x:
-        exp = 0
-        while mantissa % 10 == 0:
-            mantissa //= 10
-            exp += 1
+    if int(mantissa_int) == num_float:
+        exp_int = 0
+        while mantissa_int % constant.DECIMAL_BASE == 0:
+            mantissa_int //= constant.DECIMAL_BASE
+            exp_int += 1
 
     else:
-        exp = str(x).find('.') - (len(str(x)) - 1)
+        exp_int = str(num_float).find('.') - (len(str(num_float)) - 1)
 
-    lst_mantissa = []
-    while mantissa > 0:
-        lst_mantissa.append(mantissa % 2)
-        mantissa = mantissa // 2
-    while len(lst_mantissa) < 23:
-        lst_mantissa.append(0)
+    mantissa_bin = []
+    while mantissa_int > 0:
+        mantissa_bin.append(mantissa_int % constant.BINARY_BASE)
+        mantissa_int = mantissa_int // constant.BINARY_BASE
+    while len(mantissa_bin) < constant.MANTISSA_LENGTH:
+        mantissa_bin.append(0)
 
-    lst_exp = get_binary(exp, 8)
+    exp_bin = get_binary(exp_int, constant.EXP_LENGTH)
 
-    return (lst_mantissa + lst_exp[::-1] + [sign])[::-1]
-
-
-def float_addition(a: list, b: list):
-
-    if more_or_equal(b[1:9], a[1:9]):
-        a, b = b, a
-
-    while a[1:9] != b[1:9]:
-
-        a[1:9] = sum_bin(a[1:9], get_binary(-1, 8), 8)
-        a[9:] = mult(a[9:], get_binary(10, 23), 23)
-
-    out = sum_bin([a[0]] + a[9:], [b[0]] + b[9:], 24)
-    return [out[0]] + a[1:9] + out[9:]
+    return (mantissa_bin + exp_bin[::-1] + [sign])[::-1]
 
 
-def binary2int(lst: list) -> int:
-    num = 0
+def float_addition(first: list, second: list):
 
-    for i in range(len(lst), 1, -1):
-        num += pow(2, (len(lst) - i)) * lst[i - 1]
+    if more_or_equal(second[1:9], first[1:9]):
+        first, second = second, first
 
-    return num if not lst[0] else -num
+    while first[1:9] != second[1:9]:
+
+        first[1:9] = sum_bin(first[1:9], get_binary(-1, constant.EXP_LENGTH), constant.EXP_LENGTH)
+
+        first[9:] = mult(first[9:],
+                         get_binary(constant.DECIMAL_BASE, constant.MANTISSA_LENGTH),
+                         constant.MANTISSA_LENGTH)
+
+    out = sum_bin([first[0]] + first[9:], [second[0]] + second[9:], 24)
+    return [out[0]] + first[1:9] + out[9:]
 
 
-def binary_float2float(x: list):
-    return (1 - 2 * x[0]) * binary2int(x[9:]) * pow(10, binary2int(sum_bin(x[1:9], get_binary(127), 8)))
+def binary2int(num_bin: list) -> int:
+    num_int = 0
+
+    for i in range(len(num_bin), 1, -1):
+        num_int += pow(constant.BINARY_BASE, (len(num_bin) - i)) * num_bin[i - 1]
+
+    return num_int if not num_bin[0] else -num_int
+
+
+def binary_float2float(num: list):
+    return (1 - 2 * num[0]) * binary2int(num[9:]) * \
+        pow(constant.DECIMAL_BASE, binary2int(sum_bin(num[1:9], get_binary(127), constant.EXP_LENGTH)))
 
 
 def main():
 
     match input('1 - Операции с целыми\n2 - Операции с дробными\n'):
         case '1':
-            x = int(input("Введите первое число: "))
-            y = int(input("Введите второе число: "))
+            first = int(input("Введите первое число: "))
+            second = int(input("Введите второе число: "))
 
             print(f'''
-                Представление числа {x} в бинарном коде:
-                    Прямое - {''.join([str(i) for i in get_binary(x)])}
-                    Обратное - {''.join([str(i) for i in get_reverse_binary(x)])}
-                    Дополнительное - {''.join([str(i) for i in get_addition_binary(x)])}
+                Представление числа {first} в бинарном коде:
+                    Прямое - {''.join([str(i) for i in get_binary(first)])}
+                    Обратное - {''.join([str(i) for i in get_reverse_binary(first)])}
+                    Дополнительное - {''.join([str(i) for i in get_addition_binary(first)])}
                 
-                Представление числа {-x} в бинарном коде:
-                    Прямое - {''.join([str(i) for i in get_binary(-x)])}
-                    Обратное - {''.join([str(i) for i in get_reverse_binary(-x)])}
-                    Дополнительное - {''.join([str(i) for i in get_addition_binary(-x)])}
+                Представление числа {-first} в бинарном коде:
+                    Прямое - {''.join([str(i) for i in get_binary(-first)])}
+                    Обратное - {''.join([str(i) for i in get_reverse_binary(-first)])}
+                    Дополнительное - {''.join([str(i) for i in get_addition_binary(-first)])}
                     
-                Представление числа {y} в бинарном коде:
-                    Прямое - {''.join([str(i) for i in get_binary(y)])}
-                    Обратное - {''.join([str(i) for i in get_reverse_binary(y)])}
-                    Дополнительное - {''.join([str(i) for i in get_addition_binary(y)])}
+                Представление числа {second} в бинарном коде:
+                    Прямое - {''.join([str(i) for i in get_binary(second)])}
+                    Обратное - {''.join([str(i) for i in get_reverse_binary(second)])}
+                    Дополнительное - {''.join([str(i) for i in get_addition_binary(second)])}
                 
-                Представление числа {-y} в бинарном коде:
-                    Прямое - {''.join([str(i) for i in get_binary(-y)])}
-                    Обратное - {''.join([str(i) for i in get_reverse_binary(-y)])}
-                    Дополнительное - {''.join([str(i) for i in get_addition_binary(-y)])}
+                Представление числа {-second} в бинарном коде:
+                    Прямое - {''.join([str(i) for i in get_binary(-second)])}
+                    Обратное - {''.join([str(i) for i in get_reverse_binary(-second)])}
+                    Дополнительное - {''.join([str(i) for i in get_addition_binary(-second)])}
                     
                         
-                {x} + {y} = {binary2int(sum_bin(get_binary(x), get_binary(y)))}
-                {x} - {y} = {binary2int(sum_bin(get_binary(x), get_binary(-y)))}
-                -{x} + {y} = {binary2int(sum_bin(get_binary(-x), get_binary(y)))}
-                -{x} - {y} = {binary2int(sum_bin(get_binary(-x), get_binary(-y)))}
+                {first} + {second} = {binary2int(sum_bin(get_binary(first), get_binary(second)))}
+                {first} - {second} = {binary2int(sum_bin(get_binary(first), get_binary(-second)))}
+                -{first} + {second} = {binary2int(sum_bin(get_binary(-first), get_binary(second)))}
+                -{first} - {second} = {binary2int(sum_bin(get_binary(-first), get_binary(-second)))}
                 
-                {x} * {y} = {binary2int(mult(get_binary(x), get_binary(y)))}
-                {x} * (-{y}) = {binary2int(mult(get_binary(x), get_binary(-y)))}
-                (-{x}) * {y} = {binary2int(mult(get_binary(-x), get_binary(y)))}
-                (-{x}) * (-{y}) = {binary2int(mult(get_binary(-x), get_binary(-y)))}
+                {first} * {second} = {binary2int(mult(get_binary(first), get_binary(second)))}
+                {first} * (-{second}) = {binary2int(mult(get_binary(first), get_binary(-second)))}
+                (-{first}) * {second} = {binary2int(mult(get_binary(-first), get_binary(second)))}
+                (-{first}) * (-{second}) = {binary2int(mult(get_binary(-first), get_binary(-second)))}
                 
-                {y} / {x} = {binary2int(division(get_binary(y), get_binary(x)))} 
-                {y} / (-{x}) = {binary2int(division(get_binary(y), get_binary(-x)))} 
-                (-{y}) / {x} = {binary2int(division(get_binary(-y), get_binary(x)))} 
-                (-{y}) / (-{x}) = {binary2int(division(get_binary(-y), get_binary(-x)))}
+                {first} / {second} = {binary2int(division(get_binary(first), get_binary(second)))} 
+                {first} / (-{second}) = {binary2int(division(get_binary(first), get_binary(-second)))} 
+                (-{first}) / {second} = {binary2int(division(get_binary(-first), get_binary(second)))} 
+                (-{first}) / (-{second}) = {binary2int(division(get_binary(-first), get_binary(-second)))}
             ''')
         case '2':
-            x = float(input("Введите первое число: "))
-            y = float(input("Введите второе число: "))
+            first = float(input("Введите первое число: "))
+            second = float(input("Введите второе число: "))
             print(f'''
-            {x} + {y} = {binary_float2float(
-                float_addition(get_binary_float(x), get_binary_float(y))
+            {first} + {second} = {binary_float2float(
+                float_addition(get_binary_float(first), get_binary_float(second))
             )}
-            -{x} + {y} = {binary_float2float(
-                float_addition(get_binary_float(-x), get_binary_float(y))
+            -{first} + {second} = {binary_float2float(
+                float_addition(get_binary_float(-first), get_binary_float(second))
             )}
-            {x} - {y} = {binary_float2float(
-                float_addition(get_binary_float(x), get_binary_float(-y))
+            {first} - {second} = {binary_float2float(
+                float_addition(get_binary_float(first), get_binary_float(-second))
             )}
-            -{x} - {y} = {binary_float2float(
-                float_addition(get_binary_float(-x), get_binary_float(-y))
+            -{first} - {second} = {binary_float2float(
+                float_addition(get_binary_float(-first), get_binary_float(-second))
             )}''')
 
 
 if __name__ == '__main__':
+
     main()
