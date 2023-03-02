@@ -69,7 +69,7 @@ def main():
 
     atm_args = f'\t-insert-card (card number)\n' \
                f'\t-extract-card\n' \
-               f'\t-input-pin (pin)\n' \
+               f'\t-input-pin (PIN-code)\n' \
                f'\t-balance\n' \
                f'\t-put-money (amount)\n' \
                f'\t-get-money (amount)'
