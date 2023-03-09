@@ -5,24 +5,32 @@ from src.calc import solve, OPERATORS
 
 
 def get_variables(formula: str) -> list:
-    variables = []
+    variables, curr = [], ''
     for x in formula:
-        if x not in '() ' and x not in OPERATORS and x not in variables:
-            variables.append(x)
+        if x not in '() ' and x not in OPERATORS:
+            curr = curr + x
+        else:
+            if curr != '' and curr not in variables:
+                variables.append(curr)
+            curr = ''
+    if curr != '':
+        variables.append(curr)
     return variables
 
 
 def get_rows(formula: str) -> list:
     variables = get_variables(formula)
 
-    lst_rows = [dict(zip(variables, x)) for x in
-                sorted(list(set(itertools.combinations('01' * len(variables), len(variables)))))]
+    lst_combinations = [dict(zip(variables, x)) for x in
+                        sorted(list(set(itertools.combinations('01' * len(variables), len(variables)))))]
 
-    lst = []
-    for row in lst_rows:
-        curr_formula = ''.join([row.get(x, x) for x in formula])
-        lst.append([[int(x) for x in row.values()], int(solve(curr_formula))])
-    return lst
+    lst_rows = []
+    for combination in lst_combinations:
+        curr_formula = formula
+        for key, value in combination.items():
+            curr_formula = curr_formula.replace(key, value)
+        lst_rows.append([[int(x) for x in combination.values()], int(solve(curr_formula))])
+    return lst_rows
 
 
 class Table:

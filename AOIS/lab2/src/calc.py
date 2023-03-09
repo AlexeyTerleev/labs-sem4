@@ -4,7 +4,7 @@ OPERATORS = {
         '>': (2, lambda x, y: not x or y),
         '+': (3, lambda x, y: x or y),
         '*': (4, lambda x, y: x and y),
-        '^': (5, lambda x: not x)
+        '!': (5, lambda x: not x)
     }
 
 
@@ -41,7 +41,7 @@ def calc(polish):
     stack = []
     for token in polish:
         if token in OPERATORS:
-            if token == '^':
+            if token == '!':
                 x = stack.pop()
                 stack.append(OPERATORS[token][1](x))
             else:
