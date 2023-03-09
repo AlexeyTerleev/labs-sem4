@@ -13,10 +13,10 @@ def main():
     # formula = '!((x2 + !x3) * !(!x2 * !x3))'
 
     table = Table(formula)
-
+    print('Таблица истинности: ')
     table.show()
     print(
-        f'СДНФ: {normal_forms.perfect_disjunctive(table)}\n'
+        f'\nСДНФ: {normal_forms.perfect_disjunctive(table)}\n'
         f'СКНФ: {normal_forms.perfect_conjunctive(table)}\n\n'
         
         f'СДНФ (бинарная): {normal_forms.perfect_disjunctive_bin(table)}\n'
