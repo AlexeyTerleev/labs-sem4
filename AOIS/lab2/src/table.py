@@ -6,9 +6,9 @@ from src.calc import solve, OPERATORS
 
 def get_variables(formula: str) -> list:
     variables, curr = [], ''
-    for x in formula:
-        if x not in '() ' and x not in OPERATORS:
-            curr = curr + x
+    for sign in formula:
+        if sign not in '() ' and sign not in OPERATORS:
+            curr = curr + sign
         else:
             if curr != '' and curr not in variables:
                 variables.append(curr)
@@ -21,7 +21,7 @@ def get_variables(formula: str) -> list:
 def get_rows(formula: str) -> list:
     variables = get_variables(formula)
 
-    lst_combinations = [dict(zip(variables, x)) for x in
+    lst_combinations = [dict(zip(variables, combination)) for combination in
                         sorted(list(set(itertools.combinations('01' * len(variables), len(variables)))))]
 
     lst_rows = []
@@ -50,6 +50,6 @@ class Table:
 
     def show(self):
         table = PrettyTable(self.__header[0] + [self.__header[1]])
-        for x in self.rows:
-            table.add_row(x[0] + [x[1]])
+        for row in self.rows:
+            table.add_row(row[0] + [row[1]])
         print(table)

@@ -5,12 +5,18 @@ from src import normal_forms
 
 def main():
 
+    # formula = '!(x1 > (x3 * x1) * !(!x2 + !x3))'
+
     if len(sys.argv) > 2 or len(sys.argv) == 1:
         print(f'Expected 1 argument, but given {len(sys.argv) - 1}')
         return
 
+    if sys.argv[1].count('(') != sys.argv[1].count(')'):
+        print(f'Error, number of opening brackets: {sys.argv[1].count("(")}, '
+              f'and closing brackets: {sys.argv[1].count(")")}')
+        return
+
     formula = sys.argv[1]
-    # formula = '!((x2 + !x3) * !(!x2 * !x3))'
 
     table = Table(formula)
     print('Таблица истинности: ')

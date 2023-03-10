@@ -9,11 +9,11 @@ OPERATORS = {
 
 
 def parse(formula_string):
-    for s in formula_string:
-        if s in '01':
-            yield bool(int(s))
-        if s in OPERATORS or s in "()":
-            yield s
+    for sign in formula_string:
+        if sign in '01':
+            yield bool(int(sign))
+        if sign in OPERATORS or sign in "()":
+            yield sign
 
 
 def shunting_yard(parsed_formula):
@@ -25,10 +25,10 @@ def shunting_yard(parsed_formula):
             stack.append(token)
         elif token == ")":
             while stack:
-                x = stack.pop()
-                if x == "(":
+                element = stack.pop()
+                if element == "(":
                     break
-                yield x
+                yield element
         elif token == "(":
             stack.append(token)
         else:
@@ -42,11 +42,11 @@ def calc(polish):
     for token in polish:
         if token in OPERATORS:
             if token == '!':
-                x = stack.pop()
-                stack.append(OPERATORS[token][1](x))
+                first = stack.pop()
+                stack.append(OPERATORS[token][1](first))
             else:
-                y, x = stack.pop(), stack.pop()
-                stack.append(OPERATORS[token][1](x, y))
+                second, first = stack.pop(), stack.pop()
+                stack.append(OPERATORS[token][1](first, second))
         else:
             stack.append(token)
     return stack[0]
