@@ -9,17 +9,33 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from app.services.model import Model
 from app.view.view import View
 from app.view.error_view import ErrorView
-#from app.services.orm_model import Customer
+
+
+# from app.services.orm_model import Customer
+
+
+def date_is_valid(date: str) -> bool:
+    if not re.match(r'^\d{2}\.\d{2}.\d{4}$', date):
+        return False
+
+    day, month, year = map(lambda x: int(x), date.split('.'))
+
+    if month > 12 or month < 1:
+        return False
+    if year > 2023 or year < 1990:
+        return False
+
+    if day > 31 or (day > 30 and month in [4, 6, 9, 11]) or (day > 28 and month == 2):
+        return False
+
+    return True
 
 
 class Controller:
     def __init__(self) -> None:
         self.dialog = None
-        try:
-            self.model = Model()
-            self.view = View(controller=self)
-        except:
-            print('exception')
+        self.model = Model()
+        self.view = View(controller=self)
 
     def get_view(self):
         return self.view.root
@@ -29,20 +45,77 @@ class Controller:
         if action.type == 'REMOVE':
             print(self.view.table.children[0].get_row_checks())
             self.model.delete_customers(
-                list(map(lambda el: el[1], self.view.table.children[0].get_row_checks())))
+                list(map(lambda el: el[0], self.view.table.children[0].get_row_checks())))
             self.view.update()
         if action.type == 'FILTER':
             form = self.view.dialog.content_cls.ids
 
-            CustomerFilter = namedtuple(
-                'Customer', ['fullname', 'account_number', 'address', 'phone'])
-            customer_filter = CustomerFilter(
-                fullname=form.fullname.text,
-                account_number=form.account_number.text,
-                address=form.address.text,
-                phone=form.phone.text,
-            )
-            self.model.filter_customers(customer_filter)
+            filter_line = {
+                'tour_name': form.tour_name.text,
+                'date': form.date.text,
+                'sport': form.sport.text,
+                'name': form.name.text,
+                'min_reward': form.min_reward.text,
+                'max_reward': form.max_reward.text,
+                'min_winner_reward': form.min_winner_reward.text,
+                'max_winner_reward': form.max_winner_reward.text,
+            }
+
+            validated = True
+
+            for key in filter_line.keys():
+                if filter_line[key] == '':
+                    filter_line[key] = None
+
+            if filter_line['min_reward'] is not None \
+                    and re.match(r'^\d+\.*\d*$', filter_line['min_reward']):
+                filter_line['min_reward'] = float(filter_line['min_reward'])
+            elif filter_line['min_reward'] is not None:
+                form.min_reward.error = True
+                validated = False
+
+            if filter_line['max_reward'] is not None \
+                    and re.match(r'^\d+\.*\d*$', filter_line['max_reward']):
+                filter_line['max_reward'] = float(filter_line['max_reward'])
+            elif filter_line['max_reward'] is not None:
+                form.max_reward.error = True
+                validated = False
+
+            if filter_line['min_winner_reward'] is not None \
+                    and re.match(r'^\d+\.*\d*$', filter_line['min_winner_reward']):
+                filter_line['min_winner_reward'] = float(filter_line['min_winner_reward'])
+            elif filter_line['min_winner_reward'] is not None:
+                form.min_winner_reward.error = True
+                validated = False
+
+            if filter_line['max_winner_reward'] is not None \
+                    and re.match(r'^\d+\.*\d*$', filter_line['max_winner_reward']):
+                filter_line['max_winner_reward'] = float(filter_line['max_winner_reward'])
+            elif filter_line['max_winner_reward'] is not None:
+                form.max_winner_reward.error = True
+                validated = False
+
+            if validated \
+                    and filter_line['min_reward'] is not None \
+                    and filter_line['max_reward'] is not None\
+                    and filter_line['min_reward'] > filter_line['max_reward']:
+                form.reward.error = True
+                validated = False
+
+            if validated \
+                    and filter_line['min_winner_reward'] is not None \
+                    and filter_line['max_winner_reward'] is not None\
+                    and filter_line['min_winner_reward'] > filter_line['max_winner_reward']:
+                form.reward.error = True
+                validated = False
+
+            if validated:
+                self.model.filter_customers(filter_line)
+                self.view.close_dialog()
+                self.view.update()
+
+        if action.type == 'DISABLE_FILTER':
+            self.model.disable_filter_customers()
             self.view.close_dialog()
             self.view.update()
 
@@ -54,38 +127,44 @@ class Controller:
             self.view.open_customer_adding_dialog()
         if action.type == 'ADD_CUSTOMER':
             form = self.view.dialog.content_cls.ids
-            customer = Customer(
-                fullname=form.fullname.text,
-                account_number=form.account_number.text,
-                address=form.address.text,
-                mobile=form.mobile.text,
-                landline=form.landline.text,
-            )
+
+            new_line = {
+                'tour_name': form.tour_name.text,
+                'date': form.date.text,
+                'sport': form.sport.text,
+                'name': form.name.text,
+                'reward': form.reward.text
+            }
 
             validated: bool = True
-            if not customer.fullname or len(customer.fullname) < 4:
-                form.fullname.error = True
-                validated = False
-            if not customer.account_number or len(customer.account_number) != 8:
-                form.account_number.error = True
-                validated = False
-            if not customer.address or len(customer.fullname) < 4:
-                form.address.error = True
-                validated = False
-            if not customer.mobile or not re.match(r"\+\b[\d]{3}-[\d]{2}-[\d]{3}-[\d]{2}-[\d]{2}\b", customer.mobile):
-                form.mobile.error = True
-                validated = False
-            if not customer.landline or not re.match(r"[\d]{1}-[\d]{3}-[\d]{7}\b", customer.landline):
-                form.landline.error = True
+
+            if not new_line['tour_name']:
+                form.tour_name.error = True
                 validated = False
 
+            if not new_line['date'] or not date_is_valid(new_line['date']):
+                form.date.error = True
+                validated = False
+
+            if not new_line['sport']:
+                form.sport.error = True
+                validated = False
+
+            if not new_line['name']:
+                form.name.error = True
+                validated = False
+
+            if not new_line['reward'] or not re.match(r'^\d+\.*\d*$', new_line['reward']):
+                form.reward.error = True
+                validated = False
+            else:
+                new_line['reward'] = float(new_line['reward'])
+                new_line['winner_reward'] = new_line['reward'] * 0.6
+
             if validated:
-                self.model.add_customer(customer)
+                self.model.add_line(new_line)
                 self.view.close_dialog()
                 self.view.update()
 
     def get_customers(self):
-        return self.model.get_customers()
-
-    def get_filtered_customers(self):
-        ...
+        return self.model.get_list()

@@ -17,10 +17,9 @@ def table(props):
                 ("Название вида спорта", dp(60)),
                 ("ФИО победителя", dp(30)),
                 ("Размер призовых турнира", dp(30)),
-                ("Заработок победителя (60% от размера призовых)", dp(30)),
+                ("Заработок победителя", dp(30)),
             ],
-            row_data=props['controller'].get_customers()
-
+            row_data=props['controller'].get_customers(),
         ),
         id='table_box',
     )

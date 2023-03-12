@@ -1,10 +1,13 @@
 import sys
 import os
 
+from kivy.lang import Builder
+from kivy.uix.boxlayout import BoxLayout
+
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.textfield import MDTextField
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.pickers import MDDatePicker
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
@@ -14,63 +17,98 @@ from app.services.action import Action
 def confirm_adding_customer(controller):
     def confirm(event):
         controller.dispatch(Action(type_='ADD_CUSTOMER'))
+
     return confirm
 
 
 def deny_adding_customer(controller):
     def deny(event):
         controller.dispatch(Action(type_='CLOSE_DIALOG'))
+
     return deny
 
 
-def customer_adding_dialog(props):
-    return MDDialog(
-        title="Customer",
-        type="custom",
-        content_cls=MDBoxLayout(
-            MDTextField(
-                id='fullname',
-                hint_text="Full name",
-                font_size='36',
-                helper_text= "Full name should contain minimum 3 characters",
-                helper_text_mode= "on_error"
-            ),
-            MDTextField(
-                id='account_number',
-                hint_text="Account No",
-                font_size='36',
-                max_text_length=8,
-                helper_text= "Account number must contain 8 characters",
-                helper_text_mode= "on_error"
-            ),
-            MDTextField(
-                id="address",
-                hint_text="Address",
-                font_size='36',
-                helper_text= "Address should contain minimum 3 characters",
-                helper_text_mode= "on_error"
-            ),
-            MDTextField(
-                id="mobile",
-                hint_text="Mobile phone",
-                font_size='36',
-                helper_text= "Input format: +xxx-xx-xxx-xx-xx",
-                helper_text_mode= "on_error"
+KV = '''
+       
+<Content>
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "350dp"
+    
+    MDTextField:
+        id: tour_name
+        hint_text: "Tournament name"
+        helper_text: "Enter the name of the tournament"
+        helper_text_mode: "on_error"
 
-            ),
-            MDTextField(
-                id="landline",
-                hint_text="Landline phone",
-                font_size='36',
-                helper_text= "Input format: x-xxx-xxxxxxx",
-                helper_text_mode= "on_error"
-            ),
-            id="form",
-            orientation="vertical",
-            spacing="15dp",
-            size_hint_y=None,
-            height="370dp"
-        ),
+    MDTextField:
+        id: date
+        hint_text: "Date"
+        icon_right: "calendar"
+        on_focus: if self.focus: root.show_date_picker()
+        
+    MDTextField:
+        id: sport
+        hint_text: "Name of sport"
+        helper_text: "Enter the name of the sport"
+        helper_text_mode: "on_error"
+        
+        
+    MDTextField:
+        id: name
+        hint_text: "Full name of the athlete"
+        helper_text: "Enter enter the name of the athlete"
+        helper_text_mode: "on_error"
+        
+    MDTextField:
+        id: reward
+        hint_text: "Prize fund"
+        helper_text: "Enter an integer, or a fractional number separated by a dot"
+        helper_text_mode: "on_error"
+
+'''
+
+
+class Content(BoxLayout):
+
+    def on_save(self, instance, value, date):
+        self.ids.date.text = value.strftime("%d.%m.%Y")
+
+    def show_date_picker(self):
+        date_dialog = MDDatePicker()
+        date_dialog.bind(on_save=self.on_save)
+        date_dialog.open()
+
+'''
+    on_focus: if self.focus: root.show_menu()
+    def set_item(self, instance):
+        self.ids.drop_item.set_item(instance.text)
+
+    def show_menu(self):
+        menu_items = [
+            {
+                "icon": "git",
+                "text": f"Item{i}",
+            } for i in range(5)
+        ]
+        menu = MDDropdownMenu(
+            caller=self.ids.sport,
+            items=menu_items,
+            width_mult=4,
+            position="top",
+        )
+        menu.bind(on_save=self.set_item)
+        menu.open()
+        '''
+
+
+def customer_adding_dialog(props):
+    Builder.load_string(KV)
+    dialog = MDDialog(
+        title="Add:",
+        type="custom",
+        content_cls=Content(),
         buttons=[
             MDFlatButton(
                 text="CANCEL",
@@ -84,3 +122,4 @@ def customer_adding_dialog(props):
             ),
         ],
     )
+    return dialog
