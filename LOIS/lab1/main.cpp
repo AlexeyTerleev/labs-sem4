@@ -131,7 +131,7 @@ bool disjunction_check (const std::string& formula) {
 bool conjunction_check (const std::string& formula) {
 
     for(std::string sub_formula: get_sub_formulas(formula)) {
-        if (sub_formula.at(0) == '*' || sub_formula.at(sub_formula.length() - 1) == '*')
+        if (sub_formula.empty() || sub_formula.at(0) == '*' || sub_formula.at(sub_formula.length() - 1) == '*')
             return false;
     }
 
