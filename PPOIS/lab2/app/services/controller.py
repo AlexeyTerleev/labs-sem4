@@ -8,27 +8,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 from app.services.model import Model
 from app.view.view import View
-from app.view.error_view import ErrorView
-
-
-# from app.services.orm_model import Customer
-
-
-def date_is_valid(date: str) -> bool:
-    if not re.match(r'^\d{2}\.\d{2}.\d{4}$', date):
-        return False
-
-    day, month, year = map(lambda x: int(x), date.split('.'))
-
-    if month > 12 or month < 1:
-        return False
-    if year > 2023 or year < 1990:
-        return False
-
-    if day > 31 or (day > 30 and month in [4, 6, 9, 11]) or (day > 28 and month == 2):
-        return False
-
-    return True
 
 
 class Controller:
@@ -45,7 +24,7 @@ class Controller:
         if action.type == 'REMOVE':
             print(self.view.table.children[0].get_row_checks())
             self.model.delete_customers(
-                list(map(lambda el: el[0], self.view.table.children[0].get_row_checks())))
+                list(map(lambda el: el, self.view.table.children[0].get_row_checks())))
             self.view.update()
         if action.type == 'FILTER':
             form = self.view.dialog.content_cls.ids
@@ -142,7 +121,7 @@ class Controller:
                 form.tour_name.error = True
                 validated = False
 
-            if not new_line['date'] or not date_is_valid(new_line['date']):
+            if not new_line['date']:
                 form.date.error = True
                 validated = False
 

@@ -80,28 +80,6 @@ class Content(BoxLayout):
         date_dialog.bind(on_save=self.on_save)
         date_dialog.open()
 
-'''
-    on_focus: if self.focus: root.show_menu()
-    def set_item(self, instance):
-        self.ids.drop_item.set_item(instance.text)
-
-    def show_menu(self):
-        menu_items = [
-            {
-                "icon": "git",
-                "text": f"Item{i}",
-            } for i in range(5)
-        ]
-        menu = MDDropdownMenu(
-            caller=self.ids.sport,
-            items=menu_items,
-            width_mult=4,
-            position="top",
-        )
-        menu.bind(on_save=self.set_item)
-        menu.open()
-        '''
-
 
 def customer_adding_dialog(props):
     Builder.load_string(KV)

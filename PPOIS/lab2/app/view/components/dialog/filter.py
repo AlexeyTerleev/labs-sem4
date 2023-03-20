@@ -6,10 +6,8 @@ from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.textfield import MDTextField
+from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.pickers import MDDatePicker
-
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
@@ -24,7 +22,6 @@ def filter_customers(controller):
 
 
 def disable_filter_customers(controller):
-
     def confirm(event):
         controller.dispatch(Action(type_='DISABLE_FILTER'))
 
@@ -40,11 +37,16 @@ def deny_filter_customers(controller):
 
 KV = '''
 
+
+
 <Content>
+    id: content
     orientation: "vertical"
+    padding_y: 10
+
     spacing: "12dp"
     size_hint_y: None
-    height: "430dp"
+    height: "420dp"
 
     MDTextField:
         id: tour_name
@@ -57,13 +59,12 @@ KV = '''
         hint_text: "Date"
         icon_right: "calendar"
         on_focus: if self.focus: root.show_date_picker()
-
+    
     MDTextField:
         id: sport
-        hint_text: "Name of sport"
-        helper_text: "Enter the name of the sport"
+        hint_text: "sport"
+        icon_right: "Enter the name of the sport"
         helper_text_mode: "on_error"
-
 
     MDTextField:
         id: name
@@ -78,11 +79,13 @@ KV = '''
         helper_text_mode: "on_error"
         adaptive_height: True
         spacing: "12dp"
+        
         MDTextField:
             id: min_reward
             hint_text: "Min Prize fund"
             helper_text: "Enter an integer, or a fractional number separated by a dot"
             helper_text_mode: "on_error"
+            
         MDTextField:
             id: max_reward
             hint_text: "Max Prize fund"
@@ -96,11 +99,13 @@ KV = '''
         helper_text_mode: "on_error"
         adaptive_height: True
         spacing: "10dp"
+        
         MDTextField:
             id: min_winner_reward
             hint_text: "Min Winner Prize fund"
             helper_text: "Enter an integer, or a fractional number separated by a dot"
             helper_text_mode: "on_error"
+            
         MDTextField:
             id: max_winner_reward
             hint_text: "Max Winner Prize fund"
@@ -112,6 +117,10 @@ KV = '''
 
 class Content(BoxLayout):
 
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.dialog = None
+
     def on_save(self, instance, value, date):
         self.ids.date.text = value.strftime("%d.%m.%Y")
 
@@ -120,6 +129,7 @@ class Content(BoxLayout):
         date_dialog = MDDatePicker(day=date.day, month=date.month, year=date.year)
         date_dialog.bind(on_save=self.on_save)
         date_dialog.open()
+
 
 
 def customer_filter_dialog(props):

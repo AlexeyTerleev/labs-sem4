@@ -6,6 +6,8 @@ import re
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
+from app.services.generate_data import generate_df
+
 
 class Model:
     def __init__(self) -> None:
@@ -13,14 +15,7 @@ class Model:
             self.df = pd.read_csv('app/data/data.csv')
 
         except (FileNotFoundError, pd.errors.EmptyDataError):
-            self.df = pd.DataFrame({
-                'tour_name': [f'test_tour{x}' for x in range(5)],
-                'date': [f'test_date{x}' for x in range(5)],
-                'sport': [f'test_sport{x}' for x in range(5)],
-                'name': [f'Test Name {x}' for x in range(5)],
-                'reward': [(x + 1) * 100 for x in range(5)],
-            })
-            self.df['winner_reward'] = self.df['reward'] * 0.6
+            self.df = generate_df()
 
         self.df.to_csv('app/data/data.csv', index=False)
         self.active_df = self.df
@@ -39,10 +34,20 @@ class Model:
 
         if not len(customers):
             return
+        for line in customers:
+            self.df = self.df[(self.df['tour_name'] != line[0]) |
+                              (self.df['date'] != line[1]) |
+                              (self.df['sport'] != line[2]) |
+                              (self.df['name'] != line[3]) |
+                              (self.df['reward'] != float(line[4])) |
+                              (self.df['winner_reward'] != float(line[5]))]
 
-        self.df = self.df.set_index('tour_name')
-        self.df = self.df.drop(customers, axis=0)
-        self.df = self.df.reset_index()
+            self.active_df = self.active_df[(self.active_df['tour_name'] != line[0]) |
+                              (self.active_df['date'] != line[1]) |
+                              (self.active_df['sport'] != line[2]) |
+                              (self.active_df['name'] != line[3]) |
+                              (self.active_df['reward'] != float(line[4])) |
+                              (self.active_df['winner_reward'] != float(line[5]))]
 
         self.df.to_csv('app/data/data.csv', index=False)
 
@@ -56,8 +61,7 @@ class Model:
             self.active_df = self.active_df[self.active_df.date == filter_options['date']]
 
         if filter_options['sport'] is not None:
-            re_str = f'.*{filter_options["sport"]}.*'
-            self.active_df = self.active_df[self.active_df.sport.str.match(re_str)]
+            self.active_df = self.active_df[self.active_df.sport.isin([x.strip() for x in filter_options['sport'].split(',')])]
 
         if filter_options['name'] is not None:
             re_str = f'.*{filter_options["name"]}.*'
@@ -75,3 +79,5 @@ class Model:
 
     def disable_filter_customers(self):
         self.active_df = self.df
+
+
