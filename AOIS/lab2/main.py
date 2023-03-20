@@ -1,6 +1,7 @@
 import sys
 from src.table import Table
 from src import normal_forms
+from src.ParseExceptions import ParseFormulaBreaksException, ParseFormulaOperatorsException
 
 
 def main():
@@ -11,14 +12,12 @@ def main():
         print(f'Expected 1 argument, but given {len(sys.argv) - 1}')
         return
 
-    if sys.argv[1].count('(') != sys.argv[1].count(')'):
-        print(f'Error, number of opening brackets: {sys.argv[1].count("(")}, '
-              f'and closing brackets: {sys.argv[1].count(")")}')
+    try:
+        table = Table(sys.argv[1])
+    except (ParseFormulaBreaksException, ParseFormulaOperatorsException) as e:
+        print(e)
         return
 
-    formula = sys.argv[1]
-
-    table = Table(formula)
     print('Таблица истинности: ')
     table.show()
     print(

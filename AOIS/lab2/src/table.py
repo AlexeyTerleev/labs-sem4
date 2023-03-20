@@ -2,6 +2,7 @@ import itertools
 from prettytable import PrettyTable
 
 from src.calc import solve, OPERATORS
+from src.ParseExceptions import ParseFormulaOperatorsException, ParseFormulaBreaksException
 
 
 def get_variables(formula: str) -> list:
@@ -36,6 +37,27 @@ def get_rows(formula: str) -> list:
 class Table:
 
     def __init__(self, formula: str):
+
+        formula = ''.join(formula.split())
+
+        if formula.count('(') != formula.count(')'):
+            raise ParseFormulaBreaksException(formula)
+
+        if formula[0] in OPERATORS and formula[0] != '!':
+            raise ParseFormulaOperatorsException(formula, 0, 1)
+        if formula[-1] in OPERATORS:
+            raise ParseFormulaOperatorsException(formula, len(formula) - 1, 1)
+
+        for i in range(len(formula) - 1):
+            if (formula[i] in OPERATORS and formula[i + 1] in OPERATORS and formula[i + 1] != '!') or \
+                    (formula[i] == '!' and formula[i + 1] == '!') or \
+                    (formula[i] == '(' and formula[i + 1] in OPERATORS and formula[i + 1] != '!') or \
+                    (formula[i] in OPERATORS and formula[i + 1] == ')') or \
+                    (formula[i] == ')' and formula[i + 1] == '(') or \
+                    (formula[i] == ')' and formula[i + 1] == '!') or \
+                    (formula[i] == ')' and formula[i + 1] != ')' and formula[i + 1] not in OPERATORS):
+                raise ParseFormulaOperatorsException(formula, i, 2)
+
         self.__formula = formula
         self.__header = [get_variables(formula), 'result']
         self.__rows = get_rows(formula)
