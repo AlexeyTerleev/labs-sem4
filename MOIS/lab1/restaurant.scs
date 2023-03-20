@@ -1,4 +1,4 @@
-restaurant=[*
+
 	sc_node_struct->section_subject_domain_of_restaurant;;
 	subject_domain_of_restaurant<-subject_domain;;
 
@@ -58,8 +58,7 @@ restaurant=[*
 		concept_food;;
 
 	concept_restaurant<-rrel_maximum_studied_object_class:subject_domain_of_restaurant;;
-	
-*];;		
+
 
 
 
