@@ -14,7 +14,7 @@ def get_variables(formula: str) -> list:
             if curr != '' and curr not in variables:
                 variables.append(curr)
             curr = ''
-    if curr != '':
+    if curr != '' and curr not in variables:
         variables.append(curr)
     return variables
 
