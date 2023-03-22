@@ -16,7 +16,7 @@ def get_variables(formula: str) -> list:
             curr = ''
     if curr != '' and curr not in variables:
         variables.append(curr)
-    return variables
+    return sorted(variables)
 
 
 def get_rows(formula: str) -> list:
