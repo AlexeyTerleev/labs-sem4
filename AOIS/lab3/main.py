@@ -4,6 +4,7 @@ from src.PerfectForms import PerfectForms
 from src.ParseExceptions import ParseFormulaBreaksException, ParseFormulaOperatorsException
 
 from src.Quine_McCluskey import Quine_McCluskey
+from src.Estimated import Estimated
 
 
 def main():
@@ -27,6 +28,9 @@ def main():
         f'СКНФ: {PerfectForms.perfect_conjunctive(table)}\n\n'
         f'ТДНФ (метод Квайна-Мак-Класски): {Quine_McCluskey.minimized_disjunctive(table)}\n'
         f'ТКНФ (метод Квайна-Мак-Класски): {Quine_McCluskey.minimized_conjunctive(table)}\n\n'
+
+        f'ТДНФ (расчетный метод): {Estimated.minimized_disjunctive(table)}\n'
+        f'ТКНФ (расчетный метод): {Estimated.minimized_conjunctive(table)}\n\n'
     )
 
 
