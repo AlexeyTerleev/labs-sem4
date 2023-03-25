@@ -5,6 +5,7 @@ from src.ParseExceptions import ParseFormulaBreaksException, ParseFormulaOperato
 
 from src.Quine_McCluskey import Quine_McCluskey
 from src.Estimated import Estimated
+from src.KarnoMap import Karno
 
 
 def main():
@@ -26,11 +27,15 @@ def main():
     print(
         f'\nСДНФ: {PerfectForms.perfect_disjunctive(table)}\n'
         f'СКНФ: {PerfectForms.perfect_conjunctive(table)}\n\n'
+        
         f'ТДНФ (метод Квайна-Мак-Класски): {Quine_McCluskey.minimized_disjunctive(table)}\n'
         f'ТКНФ (метод Квайна-Мак-Класски): {Quine_McCluskey.minimized_conjunctive(table)}\n\n'
 
         f'ТДНФ (расчетный метод): {Estimated.minimized_disjunctive(table)}\n'
         f'ТКНФ (расчетный метод): {Estimated.minimized_conjunctive(table)}\n\n'
+
+        f'ТДНФ (метод Карно): {Karno.minimized_disjunctive(table)}\n'
+        f'ТКНФ (метод Карно): {Karno.minimized_conjunctive(table)}\n\n'
     )
 
 

@@ -1,7 +1,4 @@
-from functools import reduce
-
 from src.Table import Table
-from src.Calculate import solve
 from src.Glue import get_glued
 
 

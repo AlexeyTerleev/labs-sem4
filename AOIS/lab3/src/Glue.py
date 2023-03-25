@@ -19,16 +19,18 @@ def delete_duplicate(lst):
 
 
 def glue(first_constituent, second_constituent):
-    out = []
-    count = 0
-    for i in range(len(first_constituent)):
-        if first_constituent[i] != second_constituent[i]:
-            count += 1
-            out.append(2)
-        else:
-            out.append(first_constituent[i])
+    diff = 0
+    pos = -1
 
-    return out if count == 1 else None
+    for idx, (var1, var2) in enumerate(zip(first_constituent, second_constituent)):
+        if diff > 1:
+            break
+        else:
+            if var1 != var2:
+                diff += 1
+                pos = idx
+
+    return first_constituent[:pos] + [2] + second_constituent[pos + 1:] if diff == 1 else None
 
 
 def start_glue(constituents):
