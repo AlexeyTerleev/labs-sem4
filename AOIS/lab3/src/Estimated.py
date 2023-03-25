@@ -88,14 +88,3 @@ class Estimated:
                        ) for impicant in impicants]
 
         return ' * '.join([f'({x})' for x in impicants_str])
-
-
-def main():
-    table = Table('!x1 * !x2 * x3 + !x1 * x2 * !x3 + !x1 * x2 * x3 + x1 * x2* !x3')
-    table = Table('!((!x1+!c)*(!x2*!c))')
-    print(Estimated.minimized_conjunctive(table))
-    print(Estimated.minimized_disjunctive(table))
-
-
-if __name__ == '__main__':
-    main()

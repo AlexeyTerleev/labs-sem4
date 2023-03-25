@@ -173,13 +173,3 @@ class Karno:
                        ) for impicant in impicants]
 
         return ' * '.join([f'({x})' for x in impicants_str])
-
-
-def main():
-    table = Table('(a + !b)*c')
-    print(Karno.minimized_disjunctive(table))
-    print(Karno.minimized_conjunctive(table))
-
-
-if __name__ == '__main__':
-    main()
