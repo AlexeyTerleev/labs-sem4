@@ -1,8 +1,6 @@
 import sys
 import os
-
 import pandas as pd
-import re
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
@@ -11,30 +9,39 @@ from app.services.generate_data import generate_df
 
 class Model:
     def __init__(self) -> None:
+        self.file_path = None
+        self.df = None
+        self.active_df = None
+
+    def load_df(self, path):
+        self.file_path = path
         try:
-            self.df = pd.read_csv('app/data/data.csv')
+            self.df = pd.read_csv(path)
 
         except (FileNotFoundError, pd.errors.EmptyDataError):
             self.df = generate_df()
 
-        self.df.to_csv('app/data/data.csv', index=False)
+        self.df.to_csv(path, index=False)
         self.active_df = self.df
 
     def get_list(self):
-        return self.active_df.values.tolist()
+        try:
+            return self.active_df.values.tolist()
+        except AttributeError:
+            return []
 
     def add_line(self, line):
         print(line)
         self.df.loc[len(self.df.index)] = line
-        self.df.to_csv('app/data/data.csv', index=False)
+        self.df.to_csv(self.file_path, index=False)
 
         self.active_df = self.df
 
-    def delete_customers(self, customers):
+    def delete(self, competitions):
 
-        if not len(customers):
+        if not len(competitions):
             return
-        for line in customers:
+        for line in competitions:
             self.df = self.df[(self.df['tour_name'] != line[0]) |
                               (self.df['date'] != line[1]) |
                               (self.df['sport'] != line[2]) |
@@ -49,9 +56,9 @@ class Model:
                               (self.active_df['reward'] != float(line[4])) |
                               (self.active_df['winner_reward'] != float(line[5]))]
 
-        self.df.to_csv('app/data/data.csv', index=False)
+        self.df.to_csv(self.file_path, index=False)
 
-    def filter_customers(self, filter_options):
+    def filter(self, filter_options):
         self.active_df = self.df
         if filter_options['tour_name'] is not None:
             re_str = f'.*{filter_options["tour_name"]}.*'
@@ -77,7 +84,7 @@ class Model:
         if filter_options['max_winner_reward'] is not None:
             self.active_df = self.active_df[self.active_df.winner_reward <= filter_options['max_winner_reward']]
 
-    def disable_filter_customers(self):
+    def disable_filter(self):
         self.active_df = self.df
 
 

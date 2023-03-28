@@ -6,9 +6,6 @@ from kivymd.app import MDApp
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 from app.services.controller import Controller
-from app.services.model import Model
-
-import os
 
 
 class App(MDApp):

@@ -19,7 +19,7 @@ def table(props):
                 ("Размер призовых турнира", dp(30)),
                 ("Заработок победителя", dp(30)),
             ],
-            row_data=props['controller'].get_customers(),
+            row_data=props['controller'].get_competitions(),
         ),
         id='table_box',
     )

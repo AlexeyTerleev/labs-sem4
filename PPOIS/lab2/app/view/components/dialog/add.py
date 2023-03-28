@@ -6,7 +6,6 @@ from kivy.uix.boxlayout import BoxLayout
 
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.pickers import MDDatePicker
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
@@ -14,14 +13,14 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from app.services.action import Action
 
 
-def confirm_adding_customer(controller):
+def confirm_adding(controller):
     def confirm(event):
-        controller.dispatch(Action(type_='ADD_CUSTOMER'))
+        controller.dispatch(Action(type_='ADD'))
 
     return confirm
 
 
-def deny_adding_customer(controller):
+def deny_adding(controller):
     def deny(event):
         controller.dispatch(Action(type_='CLOSE_DIALOG'))
 
@@ -81,7 +80,7 @@ class Content(BoxLayout):
         date_dialog.open()
 
 
-def customer_adding_dialog(props):
+def adding_dialog(props):
     Builder.load_string(KV)
     dialog = MDDialog(
         title="Add:",
@@ -91,12 +90,12 @@ def customer_adding_dialog(props):
             MDFlatButton(
                 text="CANCEL",
                 theme_text_color="Custom",
-                on_release=deny_adding_customer(props['controller'])
+                on_release=deny_adding(props['controller'])
             ),
             MDFlatButton(
                 text="ADD",
                 theme_text_color="Custom",
-                on_release=confirm_adding_customer(props['controller'])
+                on_release=confirm_adding(props['controller'])
             ),
         ],
     )

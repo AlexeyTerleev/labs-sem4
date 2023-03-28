@@ -1,7 +1,5 @@
 import os
 import sys
-
-from collections import namedtuple
 import re
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
@@ -23,7 +21,7 @@ class Controller:
         print(action.type, action.content)
         if action.type == 'REMOVE':
             print(self.view.table.children[0].get_row_checks())
-            self.model.delete_customers(
+            self.model.delete(
                 list(map(lambda el: el, self.view.table.children[0].get_row_checks())))
             self.view.update()
         if action.type == 'FILTER':
@@ -89,22 +87,40 @@ class Controller:
                 validated = False
 
             if validated:
-                self.model.filter_customers(filter_line)
+                self.model.filter(filter_line)
                 self.view.close_dialog()
                 self.view.update()
 
+        if action.type == 'OPEN_FILTER_DIALOG':
+            self.view.open_filter_dialog()
         if action.type == 'DISABLE_FILTER':
-            self.model.disable_filter_customers()
+            self.model.disable_filter()
             self.view.close_dialog()
             self.view.update()
 
-        if action.type == 'OPEN_FILTER_DIALOG':
-            self.view.open_customer_filter_dialog()
+        if action.type == 'OPEN_CHOOSE_FILE_DIALOG':
+            self.view.open_choose_file_dialog()
+
+        if action.type == 'FILE_CHOOSE':
+            self.model.load_df(action.content)
+            self.view.close_choose_file_dialog()
+            self.view.update()
+
+        if action.type == 'CLOSE_CHOOSE_FILE_DIALOG':
+            self.view.close_choose_file_dialog()
+
         if action.type == 'CLOSE_DIALOG':
             self.view.close_dialog()
+
         if action.type == 'OPEN_ADDING_DIALOG':
-            self.view.open_customer_adding_dialog()
-        if action.type == 'ADD_CUSTOMER':
+            self.view.open_adding_dialog()
+        if action.type == 'ADD':
+            form = self.view.dialog.content_cls.ids
+            print(form)
+            self.view.close_dialog()
+            self.view.update()
+
+        if action.type == 'ADD':
             form = self.view.dialog.content_cls.ids
 
             new_line = {
@@ -145,5 +161,5 @@ class Controller:
                 self.view.close_dialog()
                 self.view.update()
 
-    def get_customers(self):
+    def get_competitions(self):
         return self.model.get_list()

@@ -6,7 +6,6 @@ from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.pickers import MDDatePicker
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
@@ -14,21 +13,21 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from app.services.action import Action
 
 
-def filter_customers(controller):
+def confirm_filter(controller):
     def confirm(event):
         controller.dispatch(Action(type_='FILTER'))
 
     return confirm
 
 
-def disable_filter_customers(controller):
+def disable_filter(controller):
     def confirm(event):
         controller.dispatch(Action(type_='DISABLE_FILTER'))
 
     return confirm
 
 
-def deny_filter_customers(controller):
+def deny_filter(controller):
     def deny(event):
         controller.dispatch(Action(type_='CLOSE_DIALOG'))
 
@@ -131,8 +130,7 @@ class Content(BoxLayout):
         date_dialog.open()
 
 
-
-def customer_filter_dialog(props):
+def filter_dialog(props):
     Builder.load_string(KV)
     dialog = MDDialog(
         title="Filter:",
@@ -142,17 +140,17 @@ def customer_filter_dialog(props):
             MDFlatButton(
                 text="DISABLE",
                 theme_text_color="Custom",
-                on_release=disable_filter_customers(props['controller'])
+                on_release=disable_filter(props['controller'])
             ),
             MDFlatButton(
                 text="CANCEL",
                 theme_text_color="Custom",
-                on_release=deny_filter_customers(props['controller'])
+                on_release=deny_filter(props['controller'])
             ),
             MDFlatButton(
                 text="SEARCH",
                 theme_text_color="Custom",
-                on_release=filter_customers(props['controller'])
+                on_release=confirm_filter(props['controller'])
             ),
         ],
     )
