@@ -34,10 +34,17 @@ def delete_unused(constituents, implicants):
                 if j not in uniq_lines_ind and usage_table[x][i]:
                     usage_table[j][i] = False
 
+    for i in range(len(usage_table)):
+        for j in range(i + 1, len(usage_table)):
+            if usage_table[i] == usage_table[j]:
+                usage_table[j] = [False] * len(usage_table[j])
+
     important_implicants = []
     for i in range(len(usage_table)):
         if reduce(lambda a, b: a or b, usage_table[i]):
             important_implicants.append(implicants[i])
+
+
 
     return important_implicants
 

@@ -74,4 +74,4 @@ class Table:
         table = PrettyTable(self.__header[0] + [self.__header[1]])
         for row in self.rows:
             table.add_row(row[0] + [row[1]])
-        print(table)
+        return table

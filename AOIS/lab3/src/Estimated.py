@@ -3,7 +3,6 @@ from src.Glue import get_glued
 
 
 def is_important(verifiable_implicant, others_implicants, type_: str) -> bool:
-
     if not len(others_implicants):
         return True
 
@@ -11,7 +10,7 @@ def is_important(verifiable_implicant, others_implicants, type_: str) -> bool:
     val = dict(zip(variables, verifiable_implicant))
 
     sub_formulas = [
-        [f'{"!" * int(not b)}{val[a] if val[a] != 2 else a}' for a, b in zip(variables, x) if b != 2]
+        [f'{"!" * int((not b) if type_ == "dis" else b)}{val[a] if val[a] != 2 else a}' for a, b in zip(variables, x) if b != 2]
         for x in others_implicants
     ]
 
@@ -28,25 +27,31 @@ def is_important(verifiable_implicant, others_implicants, type_: str) -> bool:
         if not formula.count('0' if type_ == 'dis' else '1') and len(set(formula).difference({'0', '1'})):
             minimize += list(set(formula).difference({'0', '1'}))
 
-    for val in minimize:
-        if '!' + val in minimize:
-            minimize = list(filter(lambda a: a != val and a != '!' + val, minimize))
+        # Experimental
+        elif len(formula) != len([x for x in verifiable_implicant if x != 2]):
+            return True
+
+    for v in minimize:
+        if '!' + v in minimize:
+            minimize = list(filter(lambda a: a != v and a != '!' + v, minimize))
 
     return bool(len(minimize))
 
 
 def found_important(implicants: list, type_: str):
-
     if type_ not in ['con', 'dis']:
         raise f'Error, unknown argument value type_ = {type_}'
 
+    delta = 0
     important_implicants = []
-    for impl in implicants:
-        without = [x for x in implicants if x != impl]
-        if is_important(impl, without, type_):
-            important_implicants.append(impl)
+    for i in range(len(implicants)):
+        without = [x for x in implicants if x != implicants[i - delta]]
+        if is_important(implicants[i - delta], without, type_):
+            important_implicants.append(implicants[i - delta])
+        else:
+            implicants.pop(i - delta)
+            delta += 1
     return important_implicants
-
 
 
 class Estimated:

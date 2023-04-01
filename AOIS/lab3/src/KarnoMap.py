@@ -136,6 +136,14 @@ def get_impl_from_lacunas(lacunas: list, k_map: list) -> list:
 class Karno:
 
     @staticmethod
+    def k_map(table: Table):
+        k_map = build_karno_map(table)
+        strs = []
+        for line in k_map:
+            strs.append(' . '.join([str(x) for x in line]))
+        return '\n'.join(strs)
+
+    @staticmethod
     def minimized_disjunctive(table: Table):
 
         selected_rows = [x[0] for x in table.rows if x[1]]
