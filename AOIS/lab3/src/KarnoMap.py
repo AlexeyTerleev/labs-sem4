@@ -1,6 +1,5 @@
-from functools import reduce
 from src.Table import Table
-from src.Glue import glue
+from prettytable import PrettyTable
 
 
 def bin2dec(binary: list) -> int:
@@ -26,8 +25,7 @@ def build_karno_map(table: Table):
     arity = len(table.header[0])
 
     if arity not in [2, 3, 4]:
-        print('I am too lazy to do this ^_^ (build_karno_map)')
-        return
+        raise LargeFormulaKarnoMapException()
 
     height = arity // 2
     width = (arity + 1) // 2
@@ -136,12 +134,18 @@ def get_impl_from_lacunas(lacunas: list, k_map: list) -> list:
 class Karno:
 
     @staticmethod
-    def k_map(table: Table):
+    def show_k_map(table: Table):
         k_map = build_karno_map(table)
-        strs = []
-        for line in k_map:
-            strs.append(' . '.join([str(x) for x in line]))
-        return '\n'.join(strs)
+        header = f"{''.join(table.header[0][:len(k_map) // 2])}\\{''.join(table.header[0][len(k_map) // 2:])}"
+        print(header)
+        code = [
+            [''.join(str(y) for y in x) for x in grey_code(len(table.header[0][:len(k_map) // 2]))],
+            [''.join(str(y) for y in x) for x in grey_code(len(table.header[0][len(k_map) // 2:]))]
+        ]
+        pretty_table = PrettyTable([header] + code[1])
+        for i in range(len(code[0])):
+            pretty_table.add_row([code[0][i]] + [str(x) for x in k_map[i]])
+        return pretty_table
 
     @staticmethod
     def minimized_disjunctive(table: Table):
@@ -181,3 +185,8 @@ class Karno:
                        ) for impicant in impicants]
 
         return ' * '.join([f'({x})' for x in impicants_str])
+
+
+class LargeFormulaKarnoMapException(Exception):
+    def __str__(self):
+        return 'I am too lazy to do this ^_^ (Karno map only works for 2, 3 and 4 variables)'

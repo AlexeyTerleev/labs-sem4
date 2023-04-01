@@ -5,7 +5,7 @@ from src.ParseExceptions import ParseFormulaBreaksException, ParseFormulaOperato
 
 from src.Quine_McCluskey import Quine_McCluskey
 from src.Estimated import Estimated
-from src.KarnoMap import Karno
+from src.KarnoMap import Karno, LargeFormulaKarnoMapException
 
 
 def main():
@@ -33,13 +33,17 @@ def main():
         f'ТКНФ (расчетный метод): {Estimated.minimized_conjunctive(table)}\n\n'
 
         f'ТДНФ (метод Квайна-Мак-Класски): {Quine_McCluskey.minimized_disjunctive(table)}\n'
-        f'ТКНФ (метод Квайна-Мак-Класски): {Quine_McCluskey.minimized_conjunctive(table)}\n\n'
-
-        f'ТДНФ (метод Карно): {Karno.minimized_disjunctive(table)}\n'
-        f'ТКНФ (метод Карно): {Karno.minimized_conjunctive(table)}\n\n'
-
-        f'Карта Карно:\n{Karno.k_map(table)}\n'
+        f'ТКНФ (метод Квайна-Мак-Класски): {Quine_McCluskey.minimized_conjunctive(table)}\n'
     )
+    try:
+        print(
+            f'ТДНФ (метод Карно): {Karno.minimized_disjunctive(table)}\n'
+            f'ТКНФ (метод Карно): {Karno.minimized_conjunctive(table)}\n\n'
+    
+            f'Карта Карно:\n{Karno.show_k_map(table)}\n'
+        )
+    except LargeFormulaKarnoMapException as e:
+        print(e)
 
 
 if __name__ == '__main__':
