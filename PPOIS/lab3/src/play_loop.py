@@ -1,9 +1,11 @@
 import pygame.gfxdraw
 import math
+import atexit
 from functools import wraps, reduce
 
 import src.utilities as utilities
 import src.game as game
+import src.save as save
 from src.player import Player
 from src.enemy import Enemy
 from src.weapon import Bullet
@@ -11,6 +13,10 @@ from src.blood import Blood
 from src.power import PowerUp
 from src.wave_controller import WaveController
 from src.manager import *
+
+
+def exit_handler():
+    save.data_save()
 
 
 class Button:
@@ -23,33 +29,46 @@ class Button:
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
 
-        utilities.print_text(
-            screen=game.screen, message=message, x=x + 5, y=y + 5, font_clr=b_font_clr, font_size=font_size)
+        utilities.print_text(message=message, x=x + 5, y=y + 5, font_clr=b_font_clr, font_size=font_size)
 
         if x < mouse[0] < x + self.width:
             if y < mouse[1] < y + self.height:
                 pygame.draw.rect(game.screen, self.inact_clr, (x, y, self.width, self.height))
-                utilities.print_text(
-                    screen=game.screen, message=message, x=x + 5, y=y + 5, font_clr=(123, 22, 12), font_size=font_size)
+                utilities.print_text(message=message, x=x + 5, y=y + 5, font_clr=(123, 22, 12), font_size=font_size)
                 if click[0] == 1:
-                    utilities.play_sound('button.wav')
+                    utilities.play_sfx('button.wav')
                     pygame.time.delay(300)
                     if action == 'start':
                         play_loop()
                     if action == 'rating':
-                        show_rate_table(
-                            pause_bg=pygame.image.load(utilities.get_image('table.jpg'))
-                        )
+                        show_rate_table(bg=pygame.image.load(utilities.get_image('table.jpg')))
                     if action == 'rules':
-                        show_rules(rule_bg=pygame.image.load(utilities.get_image('rules.jpg')))
+                        show_rules(bg=pygame.image.load(utilities.get_image('rules.jpg')))
+                    if action == 'settings':
+                        show_settings(
+                            bg=pygame.image.load(utilities.get_image('background.png')),
+                            slider_pos_x=325,
+                            slider_pos_y=275,
+                            slider_width=300,
+                            slider_height=30,
+
+                            music_checker_pos_x=275,
+                            music_checker_pos_y=375,
+                            music_checker_width=55,
+                            music_checker_height=40,
+
+                            sfx_checker_pos_x=475,
+                            sfx_checker_pos_y=375,
+                            sfx_checker_width=55,
+                            sfx_checker_height=40,
+                        )
                     if action == 'quit':
                         pygame.quit()
                         quit()
 
         else:
             pygame.draw.rect(game.screen, self.inact_clr, (x, y, self.width, self.height))
-            utilities.print_text(
-                screen=game.screen, message=message, x=x + 5, y=y + 5, font_clr=b_font_clr, font_size=font_size)
+            utilities.print_text(message=message, x=x + 5, y=y + 5, font_clr=b_font_clr, font_size=font_size)
 
 
 class Screen:
@@ -95,13 +114,18 @@ class Screen:
 
 
 def start():
+    atexit.register(exit_handler)
+    save.data_read()
+
     pygame.mouse.set_visible(False)
-    pygame.mixer.music.load(utilities.get_image('menu.mp3'))
-    pygame.mixer.music.play(-1)
-    print(game.save_data.get('rating'))
+    pygame.mixer.music.load(utilities.get_sound('menu.mp3'))
+    pygame.mixer.music.set_volume(game.SOUND_VOLUME / 100)
+
+    if game.MUSIC:
+        pygame.mixer.music.play(-1)
 
     show_menu(
-        menu_bg=pygame.image.load(utilities.get_image('crimsonland_menu.jpg')),
+        bg=pygame.image.load(utilities.get_image('crimsonland_menu.jpg')),
         start_btn=Button(125, 25),
         rating_btn=Button(125, 25),
         info_btn=Button(125, 25),
@@ -112,30 +136,30 @@ def start():
 
 @Screen()
 def show_menu(*args, **kwargs):
-    game.screen.blit(kwargs['menu_bg'], (0, 0))
+    game.screen.blit(kwargs['bg'], (0, 0))
     kwargs['start_btn'].draw(220, 213, 'Start game', action='start')
     kwargs['rating_btn'].draw(203, 274, 'Rating', action='rating')
     kwargs['info_btn'].draw(182, 333, 'About game', action='rules')
-    kwargs['opt_btn'].draw(161, 394, 'Options', action=None)
+    kwargs['opt_btn'].draw(161, 394, 'Settings', action='settings')
     kwargs['quit_btn'].draw(140, 453, 'Quit', action='quit')
 
 
 @Screen([pygame.K_ESCAPE])
 def show_congratulations(*args, **kwargs):
-    game.screen.blit(kwargs['cong_bg'], (0, 0))
+    game.screen.blit(kwargs['bg'], (0, 0))
 
 
 @Screen([pygame.K_RETURN])
 def show_pause(*args, **kwargs):
-    game.screen.blit(kwargs['pause_bg'], (0, 0))
+    game.screen.blit(kwargs['bg'], (0, 0))
     utilities.print_text(
-        screen=game.screen, message='Paused! press ENTER to continue',
+        message='Paused! press ENTER to continue',
         x=110, y=280, font_clr=(255, 255, 255), font_size=20)
 
 
 @Screen([pygame.K_ESCAPE, pygame.K_RETURN])
 def show_rules(*args, **kwargs):
-    game.screen.blit(kwargs['rule_bg'], (0, 0))
+    game.screen.blit(kwargs['bg'], (0, 0))
 
 
 @Screen([pygame.K_ESCAPE, pygame.K_RETURN])
@@ -143,28 +167,21 @@ def show_rate_table(*args, **kwargs):
     x, y = 165, 155
     step_x, step_y = 380, 40
 
-    sorted_tuples = sorted(game.r_table.r_table.items(), key=lambda item: item[1])
-
-    game.r_table.r_table = {k: v for k, v in sorted_tuples}
-
-    game.screen.blit(kwargs['pause_bg'], (0, 0))
+    game.screen.blit(kwargs['bg'], (0, 0))
 
     count = 0
 
-    for name, value in reversed(game.r_table.r_table.items()):
+    for name, value in game.rating:
         if count == 0:
             utilities.print_text(
-                screen=game.screen,
                 message=f' {count + 1}{" " * 5}{name}', x=x, y=y, font_type='fonts/Qore.otf', font_clr=(255, 255, 255),
                 font_size=15)
         else:
             utilities.print_text(
-                screen=game.screen,
                 message=f'{count + 1}{" " * 5}{name}', x=x, y=y, font_type='fonts/Qore.otf', font_clr=(255, 255, 255),
                 font_size=15)
 
         utilities.print_text(
-            screen=game.screen,
             message=str(value), x=x + step_x, y=y, font_type='fonts/Qore.otf', font_clr=(255, 255, 255), font_size=15)
 
         y += step_y
@@ -174,15 +191,112 @@ def show_rate_table(*args, **kwargs):
 
 
 @Screen([pygame.K_RETURN, pygame.K_ESCAPE])
-def show_input_name(*args, **kwargs):
-    game.screen.blit(kwargs['pause_bg'], (0, 0))
+def show_settings(*args, **kwargs):
+    game.screen.blit(kwargs['bg'], (0, 0))
 
     utilities.print_text(
-        screen=game.screen,
+        message='SETTINGS: ',
+        x=game.WIDTH/2, y=game.HEIGHT/4,
+        font_clr=(255, 255, 255), font_size=40, font_type='fonts/Qore.otf', align='center')
+
+    # volume slider
+    utilities.print_text(
+        message='Volume: ',
+        x=kwargs['slider_pos_x'] - 150, y=kwargs['slider_pos_y'],
+        font_clr=(255, 255, 255), font_size=20, font_type='fonts/Qore.otf')
+    pygame.draw.rect(
+        game.screen, (0, 0, 0),
+        pygame.Rect(kwargs['slider_pos_x'], kwargs['slider_pos_y'],
+                    kwargs['slider_width'], kwargs['slider_height']),
+        border_radius=5
+    )
+    pygame.draw.rect(
+        game.screen, (255, 255, 255),
+        pygame.Rect(kwargs['slider_pos_x'], kwargs['slider_pos_y'],
+                    kwargs['slider_width'] * game.SOUND_VOLUME / 100, kwargs['slider_height']),
+        border_radius=5
+    )
+
+    # music checker
+    utilities.print_text(
+        message='Music: ',
+        x=kwargs['music_checker_pos_x'] + kwargs['music_checker_width'] / 2, y=kwargs['music_checker_pos_y'] - 30,
+        font_clr=(255, 255, 255), font_size=20, font_type='fonts/Qore.otf', align='center')
+    pygame.draw.rect(
+        game.screen, (124, 252, 0) if game.MUSIC else (255, 0, 0),
+        pygame.Rect(kwargs['music_checker_pos_x'], kwargs['music_checker_pos_y'],
+                    kwargs['music_checker_width'], kwargs['music_checker_height']),
+        border_radius=5
+    )
+    utilities.print_text(
+        message='ON' if game.MUSIC else 'OFF',
+        x=kwargs['music_checker_pos_x'] + kwargs['music_checker_width'] / 2,
+        y=kwargs['music_checker_pos_y'] + kwargs['music_checker_height'] / 2,
+        font_clr=(255, 255, 255), font_size=20, font_type='fonts/Qore.otf', align='center')
+
+    # sfx checker
+    utilities.print_text(
+        message='SFx: ',
+        x=kwargs['sfx_checker_pos_x'] + kwargs['sfx_checker_width'] / 2, y=kwargs['sfx_checker_pos_y'] - 30,
+        font_clr=(255, 255, 255), font_size=20, font_type='fonts/Qore.otf', align='center')
+    pygame.draw.rect(
+        game.screen, (124, 252, 0) if game.SFX else (255, 0, 0),
+        pygame.Rect(kwargs['sfx_checker_pos_x'], kwargs['sfx_checker_pos_y'],
+                    kwargs['sfx_checker_width'], kwargs['sfx_checker_height']),
+        border_radius=5
+    )
+    utilities.print_text(
+        message='ON' if game.SFX else 'OFF',
+        x=kwargs['sfx_checker_pos_x'] + kwargs['sfx_checker_width'] / 2,
+        y=kwargs['sfx_checker_pos_y'] + kwargs['sfx_checker_height'] / 2,
+        font_clr=(255, 255, 255), font_size=20, font_type='fonts/Qore.otf', align='center')
+
+    if pygame.mouse.get_pressed()[0]:
+        mouse_pos = pygame.mouse.get_pos()
+
+        if kwargs['slider_pos_x'] <= mouse_pos[0] <= kwargs['slider_pos_x'] + kwargs['slider_width'] and \
+                kwargs['slider_pos_y'] <= mouse_pos[1] <= kwargs['slider_pos_y'] + kwargs['slider_height']:
+            game.SOUND_VOLUME = int((mouse_pos[0] - kwargs['slider_pos_x']) / kwargs['slider_width'] * 100)
+            pygame.mixer.music.set_volume(game.SOUND_VOLUME / 100)
+
+    for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            quit()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            if kwargs['music_checker_pos_x'] <= mouse_pos[0] \
+                    <= kwargs['music_checker_pos_x'] + kwargs['music_checker_width'] and \
+                    kwargs['music_checker_pos_y'] <= mouse_pos[1] \
+                    <= kwargs['music_checker_pos_y'] + kwargs['music_checker_height']:
+                if game.MUSIC:
+                    pygame.mixer.music.stop()
+                else:
+                    pygame.mixer.music.play()
+                utilities.play_sfx('button.wav')
+                game.MUSIC = not game.MUSIC
+            if kwargs['sfx_checker_pos_x'] <= mouse_pos[0] \
+                    <= kwargs['sfx_checker_pos_x'] + kwargs['sfx_checker_width'] and \
+                    kwargs['sfx_checker_pos_y'] <= mouse_pos[1] \
+                    <= kwargs['sfx_checker_pos_y'] + kwargs['sfx_checker_height']:
+                if game.SFX:
+                    utilities.play_sfx('button.wav')
+                    game.SFX = not game.SFX
+                else:
+                    game.SFX = not game.SFX
+                    utilities.play_sfx('button.wav')
+
+
+@Screen([pygame.K_RETURN, pygame.K_ESCAPE])
+def show_input_name(*args, **kwargs):
+    game.screen.blit(kwargs['bg'], (0, 0))
+
+    utilities.print_text(
         message='Enter your name: ', x=274, y=300, font_clr=(255, 255, 255), font_size=20, font_type='fonts/Qore.otf')
     pygame.draw.rect(game.screen, (255, 255, 255), kwargs['input_rect'])
     utilities.print_text(
-        screen=game.screen,
         message=kwargs['input_text'] + kwargs['addition'] * '_',
         x=kwargs['input_rect'].x + 5,
         y=kwargs['input_rect'].y + 5,
@@ -195,9 +309,10 @@ def show_input_name(*args, **kwargs):
 
             if event.key == pygame.K_RETURN:
                 if len(kwargs['input_text']):
-                    game.r_table.update(kwargs['input_text'], ScoreManager.score)
-                    if max(game.r_table.r_table, key=game.r_table.r_table.get) == kwargs['input_text']:
-                        show_congratulations(cong_bg=pygame.image.load(utilities.get_image('congratulations.jpg')))
+                    game.rating.append([kwargs['input_text'], ScoreManager.score])
+                    game.rating = sorted(game.rating, key=lambda x: x[1])[::-1]
+                    if game.rating[0][0] == kwargs['input_text']:
+                        show_congratulations(bg=pygame.image.load(utilities.get_image('congratulations.jpg')))
                     return kwargs
 
             elif event.key == pygame.K_ESCAPE:
@@ -222,20 +337,14 @@ def show_input_name(*args, **kwargs):
 
 @Screen([pygame.K_ESCAPE])
 def show_rip(*args, **kwargs):
-    game.screen.blit(kwargs['pause_bg'], (0, 0))
+    game.screen.blit(kwargs['bg'], (0, 0))
 
     utilities.print_text(
-        screen=game.screen, message='R.I.P.',
+        message='R.I.P.',
         x=280, y=280, font_clr=(255, 255, 255), font_size=50, font_type='fonts/Qore.otf')
     utilities.print_text(
-        screen=game.screen, message=kwargs['name'],
+        message=kwargs['name'],
         x=280, y=330, font_clr=(255, 255, 255), font_size=50, font_type='fonts/Qore.otf')
-
-    if not kwargs['saved']:
-        game.save_data.save(kwargs['name'])
-        game.save_data.add('rating', game.r_table.r_table)
-        kwargs['saved'] = True
-        return kwargs
 
 
 def play_loop():
@@ -271,7 +380,7 @@ def play_loop():
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    show_pause(pause_bg=pygame.image.load(utilities.get_image('land.png')))
+                    show_pause(bg=pygame.image.load(utilities.get_image('land.png')))
 
         keys = pygame.key.get_pressed()
         cursor_rect.center = pygame.mouse.get_pos()
@@ -379,7 +488,6 @@ def play_loop():
 
         elif len(enemies_group.sprites()) <= 5:
             utilities.print_text(
-                screen=game.screen,
                 message="New Wave coming in",
                 x=280, y=50, font_clr=(255, 255, 255), font_type='fonts/Qore.otf', font_size=17)
             wave_controller.draw_timer(game.screen, 400, 110)
@@ -408,7 +516,7 @@ def play_loop():
 
         if not mr_player.alive:
             name = show_input_name(
-                pause_bg=pygame.image.load(utilities.get_image('enter.jpg')),
+                bg=pygame.image.load(utilities.get_image('enter.jpg')),
                 input_text='',
                 addition=True,
                 tick=0,
@@ -417,19 +525,16 @@ def play_loop():
             if name is not None:
                 show_rip(
                     name=name,
-                    pause_bg=pygame.image.load(utilities.get_image('enter.jpg')),
-                    saved=False
+                    bg=pygame.image.load(utilities.get_image('enter.jpg'))
                 )
             ScoreManager.score = 0
             break
 
         utilities.print_text(
-            screen=game.screen,
             message="Score: " + str(ScoreManager.score),
             x=10, y=10, font_clr=(255, 255, 255), font_type='fonts/Qore.otf')
 
         utilities.print_text(
-            screen=game.screen,
             message="Wave: " + str(wave_controller.wave_number),
             x=615, y=10, font_clr=(255, 255, 255), font_type='fonts/Qore.otf')
 

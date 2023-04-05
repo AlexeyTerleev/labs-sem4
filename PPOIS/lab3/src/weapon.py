@@ -52,7 +52,7 @@ class Weapon:
                 Bullet(player.screen, player.x, player.y, angle, self.damage, self.ammo_speed)
                 self.ammo_count -= 1
 
-            utilities.play_sound(self.shoot_sound)
+            utilities.play_sfx(self.shoot_sound)
 
     def reload(self):
         self.ammo_count = self.ammo_count_max
@@ -65,5 +65,5 @@ class Weapon:
 
     def draw_ammo(self, x, y):
         if self.type != 'gun':
-            utilities.print_text(f'{self.ammo_count}/{self.ammo_count_max}', x + 18, y + 18, font_type="Qore.otf",
-                                 font_clr=(255, 255, 255), font_size=15)
+            utilities.print_text(f'{self.ammo_count}/{self.ammo_count_max}', x + 18, y + 18,
+                                 font_type="Qore.otf", font_clr=(255, 255, 255), font_size=15)

@@ -114,7 +114,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def get_hit(self, damage):
         if damage:
-            utilities.play_sound('hit.wav')
+            utilities.play_sfx('hit.wav')
             self.hurtTimer = 5
 
         if 180 >= self.angle >= 0:
@@ -135,7 +135,7 @@ class Enemy(pygame.sprite.Sprite):
             if random.random() > .85:
                 power.PowerUp(self.screen, [self.x, self.y])
 
-            utilities.play_sound('point.wav')
+            utilities.play_sfx('point.wav')
             ScoreManager.score += int(self.max_health/5)
 
 

@@ -43,7 +43,7 @@ class Player(pygame.sprite.Sprite):
 
         self.alive = True
 
-        self.health_max = 20 #---------------------------
+        self.health_max = 100
         self.health = self.health_max
 
         self.weapons = [weapon.Weapon('gun', 25, 1, 1, 13, 7, 'survivor-move_handgun_0.png', 'gun_shot.mp3'),
@@ -166,7 +166,7 @@ class Player(pygame.sprite.Sprite):
                 self.player_weapon.reload_cooldown = 0
 
             if self.player_weapon.reload_cooldown % 60 == 0:
-                utilities.play_sound(self.player_weapon.reload_sound)
+                utilities.play_sfx(self.player_weapon.reload_sound)
 
     def get_hit(self, damage):
         self.health -= damage
