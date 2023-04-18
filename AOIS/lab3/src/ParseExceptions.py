@@ -20,3 +20,9 @@ class ParseFormulaOperatorsException(Exception):
                f'{"^" * self.__length}' \
                f'{"-" * (len(self.__formula) - self.__length - self.__pos)}' \
                f'\033[37m'
+
+
+class HeadersNumberException(Exception):
+
+    def __str__(self):
+        return '\033[31mNumber of formulas must be equal to the number of output headers\033[37m'

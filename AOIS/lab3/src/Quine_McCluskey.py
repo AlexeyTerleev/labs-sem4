@@ -44,8 +44,6 @@ def delete_unused(constituents, implicants):
         if reduce(lambda a, b: a or b, usage_table[i]):
             important_implicants.append(implicants[i])
 
-
-
     return important_implicants
 
 
@@ -55,36 +53,44 @@ class Quine_McCluskey:
     def minimized_disjunctive(table: Table):
         variables = table.header[0]
 
-        selected_rows = [x[0] for x in table.rows if x[1]]
+        result = []
+        for i in range(len(table.rows[0][1])):
 
-        if not len(selected_rows):
-            return None
-        elif len(selected_rows) == len(table.rows):
-            return 1
 
-        impicants = delete_unused(selected_rows, get_glued(selected_rows))
+            selected_rows = [x[0] for x in table.rows if x[1][i]]
 
-        impicants_str = [
-            ' * '.join([f'{"!" * int(not c)}{v}' for c, v in zip(impicant, variables) if c != 2]
-                       ) for impicant in impicants]
+            if not len(selected_rows):
+                return None
+            elif len(selected_rows) == len(table.rows):
+                return 1
 
-        return ' + '.join([f'({x})' for x in impicants_str])
+            impicants = delete_unused(selected_rows, get_glued(selected_rows))
+
+            impicants_str = [
+                ' * '.join([f'{"!" * int(not c)}{v}' for c, v in zip(impicant, variables) if c != 2]
+                           ) for impicant in impicants]
+
+            result.append((table.header[1][i], ' + '.join([f'({x})' for x in impicants_str])))
+
+        return result
 
     @staticmethod
     def minimized_conjunctive(table: Table):
         variables = table.header[0]
+        result = []
+        for i in range(len(table.rows[0][1])):
+            selected_rows = [x[0] for x in table.rows if not x[1][i]]
 
-        selected_rows = [x[0] for x in table.rows if not x[1]]
+            if not len(selected_rows):
+                return None
+            elif len(selected_rows) == len(table.rows):
+                return 0
 
-        if not len(selected_rows):
-            return None
-        elif len(selected_rows) == len(table.rows):
-            return 0
+            impicants = delete_unused(selected_rows, get_glued(selected_rows))
 
-        impicants = delete_unused(selected_rows, get_glued(selected_rows))
+            impicants_str = [
+                ' + '.join([f'{"!" * c}{v}' for c, v in zip(impicant, variables) if c != 2]
+                           ) for impicant in impicants]
 
-        impicants_str = [
-            ' + '.join([f'{"!" * c}{v}' for c, v in zip(impicant, variables) if c != 2]
-                       ) for impicant in impicants]
-
-        return ' * '.join([f'({x})' for x in impicants_str])
+            result.append((table.header[1][i], ' * '.join([f'({x})' for x in impicants_str])))
+        return result

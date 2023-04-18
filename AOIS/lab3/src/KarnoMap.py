@@ -21,7 +21,7 @@ def grey_code(num: int) -> list:
         return [[0, 0], [0, 1], [1, 1], [1, 0]]
 
 
-def build_karno_map(table: Table):
+def build_karno_map(table: Table, res_ind: int):
     arity = len(table.header[0])
 
     if arity not in [2, 3, 4]:
@@ -37,7 +37,7 @@ def build_karno_map(table: Table):
 
     for i in range(len(k_map)):
         for j in range(len(k_map[i])):
-            k_map[i][j] = table.rows[bin2dec(rows_header[i] + cols_header[j])][1]
+            k_map[i][j] = table.rows[bin2dec(rows_header[i] + cols_header[j])][1][res_ind]
 
     return k_map
 
@@ -135,56 +135,67 @@ class Karno:
 
     @staticmethod
     def show_k_map(table: Table):
-        k_map = build_karno_map(table)
-        header = f"{''.join(table.header[0][:len(k_map) // 2])}\\{''.join(table.header[0][len(k_map) // 2:])}"
-        print(header)
-        code = [
-            [''.join(str(y) for y in x) for x in grey_code(len(table.header[0][:len(k_map) // 2]))],
-            [''.join(str(y) for y in x) for x in grey_code(len(table.header[0][len(k_map) // 2:]))]
-        ]
-        pretty_table = PrettyTable([header] + code[1])
-        for i in range(len(code[0])):
-            pretty_table.add_row([code[0][i]] + [str(x) for x in k_map[i]])
-        return pretty_table
+        result = []
+        for i in range(len(table.rows[0][1])):
+            k_map = build_karno_map(table, i)
+            header = f"{''.join(table.header[0][:len(k_map) // 2])}\\{''.join(table.header[0][len(k_map) // 2:])}"
+            code = [
+                [''.join(str(y) for y in x) for x in grey_code(len(table.header[0][:len(k_map) // 2]))],
+                [''.join(str(y) for y in x) for x in grey_code(len(table.header[0][len(k_map) // 2:]))]
+            ]
+            pretty_table = PrettyTable([header] + code[1])
+            for j in range(len(code[0])):
+                pretty_table.add_row([code[0][j]] + [str(x) for x in k_map[j]])
+            result.append((table.header[1][i], pretty_table))
+        return result
 
     @staticmethod
     def minimized_disjunctive(table: Table):
-
-        selected_rows = [x[0] for x in table.rows if x[1]]
-
-        if not len(selected_rows):
-            return None
-        elif len(selected_rows) == len(table.rows):
-            return 1
-
-        k_map = build_karno_map(table)
         variables = table.header[0]
-        impicants = get_impl_from_lacunas(found_lacunas(k_map, 1), k_map)
+        result = []
+        for i in range(len(table.rows[0][1])):
 
-        impicants_str = [
-            ' * '.join([f'{"!" * (not c)}{v}' for c, v in zip(impicant, variables) if c != 2]
-                       ) for impicant in impicants]
-        return ' + '.join([f'({x})' for x in impicants_str])
+            selected_rows = [x[0] for x in table.rows if x[1][i]]
+
+            if not len(selected_rows):
+                return None
+            elif len(selected_rows) == len(table.rows):
+                return 1
+
+            k_map = build_karno_map(table, i)
+
+            impicants = get_impl_from_lacunas(found_lacunas(k_map, 1), k_map)
+
+            impicants_str = [
+                ' * '.join([f'{"!" * (not c)}{v}' for c, v in zip(impicant, variables) if c != 2]
+                           ) for impicant in impicants]
+            result.append((table.header[1][i], ' + '.join([f'({x})' for x in impicants_str])))
+        return result
 
     @staticmethod
     def minimized_conjunctive(table: Table):
-
-        selected_rows = [x[0] for x in table.rows if not x[1]]
-
-        if not len(selected_rows):
-            return None
-        elif len(selected_rows) == len(table.rows):
-            return 0
-
-        k_map = build_karno_map(table)
         variables = table.header[0]
-        impicants = get_impl_from_lacunas(found_lacunas(k_map, 0), k_map)
+        result = []
+        for i in range(len(table.rows[0][1])):
 
-        impicants_str = [
-            ' + '.join([f'{"!" * c}{v}' for c, v in zip(impicant, variables) if c != 2]
-                       ) for impicant in impicants]
+            selected_rows = [x[0] for x in table.rows if not x[1][i]]
 
-        return ' * '.join([f'({x})' for x in impicants_str])
+            if not len(selected_rows):
+                return None
+            elif len(selected_rows) == len(table.rows):
+                return 0
+
+            k_map = build_karno_map(table, i)
+            variables = table.header[0]
+            impicants = get_impl_from_lacunas(found_lacunas(k_map, 0), k_map)
+
+            impicants_str = [
+                ' + '.join([f'{"!" * c}{v}' for c, v in zip(impicant, variables) if c != 2]
+                           ) for impicant in impicants]
+
+            result.append((table.header[1][i], ' * '.join([f'({x})' for x in impicants_str])))
+
+        return result
 
 
 class LargeFormulaKarnoMapException(Exception):
