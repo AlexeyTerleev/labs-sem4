@@ -66,4 +66,4 @@ class Weapon:
     def draw_ammo(self, x, y):
         if self.type != 'gun':
             utilities.print_text(f'{self.ammo_count}/{self.ammo_count_max}', x + 18, y + 18,
-                                 font_type="Qore.otf", font_clr=(255, 255, 255), font_size=15)
+                                 font_type="fonts/Qore.otf", font_clr=(255, 255, 255), font_size=15)

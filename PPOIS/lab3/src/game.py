@@ -1,7 +1,5 @@
 import pygame.gfxdraw
 
-from src.save import data_read
-
 
 WIDTH = 800
 HEIGHT = 600

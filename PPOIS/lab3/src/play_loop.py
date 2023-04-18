@@ -469,10 +469,10 @@ def play_loop():
         if keys[pygame.K_1]:
             mr_player.change_weapon(0)
         if keys[pygame.K_2]:
-            if wave_controller.wave_number >= 5:
+            if wave_controller.wave_number >= 0:
                 mr_player.change_weapon(1)
         if keys[pygame.K_3]:
-            if wave_controller.wave_number >= 10:
+            if wave_controller.wave_number >= 0:
                 mr_player.change_weapon(2)
 
         if (keys[pygame.K_r] and mr_player.player_weapon.ammo_count_max > mr_player.player_weapon.ammo_count > 0) or \
@@ -500,10 +500,10 @@ def play_loop():
 
                 wave_controller.new_wave(mr_player)
 
-        mr_player.update(enemies_group, power_group)
-
         for blood in blood_group:
             blood.update()
+
+        mr_player.update(enemies_group, power_group)
 
         for power in power_group:
             power.update(mr_player)
