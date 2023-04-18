@@ -5,7 +5,7 @@ from typing import List, Dict
 from prettytable import PrettyTable
 
 from src.Calculate import solve, OPERATORS
-from src.ParseExceptions import ParseFormulaOperatorsException, ParseFormulaBreaksException, HeadersNumberException
+from src.ParseExceptions import ParseFormulaOperatorsException, ParseFormulaBreaksException
 
 
 def get_variables(formula: str) -> list:
@@ -65,7 +65,7 @@ def formula_check(formula: str) -> None:
 
 class Table:
 
-    def __init__(self, formulas: List[str], output_headers: List[str]):
+    def __init__(self, formulas: List[str], output_headers: List[str] = None):
 
         for formula in formulas:
             formula_check(formula)
@@ -75,22 +75,22 @@ class Table:
             variables = list(set(variables + get_variables(formula)))
         variables = sorted(variables)
 
-        if len(output_headers) != len(formulas):
-            raise HeadersNumberException
+        if output_headers is None or len(output_headers) != len(formulas):
+            output_headers = [f'y{x}' for x in range(len(formulas))]
 
         self.__formulas = formulas
         self.__header = [variables, output_headers]
         self.__rows = get_rows(formulas, variables)
 
     @property
-    def header(self):
+    def header(self) -> list:
         return self.__header
 
     @property
-    def rows(self):
+    def rows(self) -> list:
         return self.__rows
 
-    def show(self):
+    def show(self) -> PrettyTable:
         table = PrettyTable(self.__header[0] + self.__header[1])
         for row in self.rows:
             table.add_row(row[0] + row[1])

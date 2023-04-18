@@ -16,8 +16,12 @@ pip install -r requirements.txt
 
 ```bash
 cd lab3
-python3 main.py '{formula}'
+python3 main.py
 ```
+
+#### You can insert your formulas by changing variable 'formulas' in main.py (it should be a list)
+#### You can connect and disconnect different methods of minimisation just by uncomment and comment the output
+
 
 ### Boolean operands
 * equivalence: &nbsp; ~
@@ -30,42 +34,33 @@ python3 main.py '{formula}'
 
 #### Input:
 ```bash
-python3 main.py '!(b + c > (a * !c + !b))'
+python3 main.py
 ```
 #### Output:
 ```bash
-Формула: !(b + c > (a * !c + !b))
+Формулы:
+res = (!a*!b*p)+(!a*b*!p)+(a*!b*!p)+(a*b*p)
+tran = (!a*b*p)+(a*!b*p)+(a*b*!p)+(a*b*p)
 Таблица истинности:
- +---+---+---+--------+
-| a | b | c | result |
-+---+---+---+--------+
-| 0 | 0 | 0 |   0    |
-| 0 | 0 | 1 |   0    |
-| 0 | 1 | 0 |   1    |
-| 0 | 1 | 1 |   1    |
-| 1 | 0 | 0 |   0    |
-| 1 | 0 | 1 |   0    |
-| 1 | 1 | 0 |   0    |
-| 1 | 1 | 1 |   1    |
-+---+---+---+--------+
-СДНФ: (!a * b * !c) + (!a * b * c) + (a * b * c)
-СКНФ: (a + b + c) * (a + b + !c) * (!a + b + c) * (!a + b + !c) * (!a + !b + c)
++---+---+---+-----+------+
+| a | b | p | res | tran |
++---+---+---+-----+------+
+| 0 | 0 | 0 |  0  |  0   |
+| 0 | 0 | 1 |  1  |  0   |
+| 0 | 1 | 0 |  1  |  0   |
+| 0 | 1 | 1 |  0  |  1   |
+| 1 | 0 | 0 |  1  |  0   |
+| 1 | 0 | 1 |  0  |  1   |
+| 1 | 1 | 0 |  0  |  1   |
+| 1 | 1 | 1 |  1  |  1   |
++---+---+---+-----+------+
 
-ТДНФ (расчетный метод): (!a * b) + (b * c)
-ТКНФ (расчетный метод): (!a + c) * (b)
+СДНФ:
+res: (!a * !b * p) + (!a * b * !p) + (a * !b * !p) + (a * b * p)
+tran: (!a * b * p) + (a * !b * p) + (a * b * !p) + (a * b * p)
 
-ТДНФ (метод Квайна-Мак-Класски): (!a * b) + (b * c)
-ТКНФ (метод Квайна-Мак-Класски): (!a + c) * (b)
+ТДНФ (метод Карно):
+res: (!a * !b * p) + (!a * b * !p) + (a * !b * !p) + (a * b * p)
+tran: (a * p) + (a * b) + (b * p)
 
-a\bc
-ТДНФ (метод Карно): (!a * b) + (b * c)
-ТКНФ (метод Карно): (b) * (!a + c)
-
-Карта Карно:
-+------+----+----+----+----+
-| a\bc | 00 | 01 | 11 | 10 |
-+------+----+----+----+----+
-|  0   | 0  | 0  | 1  | 1  |
-|  1   | 0  | 0  | 1  | 0  |
-+------+----+----+----+----+
 ```

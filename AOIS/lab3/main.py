@@ -1,7 +1,7 @@
 import sys
 from src.Table import Table
 from src.PerfectForms import PerfectForms
-from src.ParseExceptions import ParseFormulaBreaksException, ParseFormulaOperatorsException, HeadersNumberException
+from src.ParseExceptions import ParseFormulaBreaksException, ParseFormulaOperatorsException
 from src.Utilities import print_normal_forms
 
 from src.Quine_McCluskey import Quine_McCluskey
@@ -11,40 +11,38 @@ from src.KarnoMap import Karno, LargeFormulaKarnoMapException
 
 def main():
 
-    # if len(sys.argv) > 2 or len(sys.argv) == 1:
-    #     print(f'Expected 1 argument, but given {len(sys.argv) - 1}')
-    #     return
-    #
-    # formula = sys.argv[1]
+    formulas, headers = None, None
 
     # formulas = ['a > !((b + c) > (a * c + b))']
     # headers = ['res']
     #
-    # formulas = [
-    #     '(!a*!b*p)+(!a*b*!p)+(a*!b*!p)+(a*b*p)',
-    #     '(!a*b*p)+(a*!b*p)+(a*b*!p)+(a*b*p)',
-    # ]
-    # headers = ['res', 'tran']
-    #
     formulas = [
-        '(!x1*!x2*!x3*!x4)+(!x1*!x2*!x3*x4)+(!x1*!x2*x3*!x4)+(!x1*!x2*x3*x4)'
-        '+(!x1*x2*!x3*!x4)+(!x1*x2*!x3*x4)+(!x1*x2*x3*!x4)',
-
-        '(!x1*!x2*x3*x4)+(!x1*x2*!x3*!x4)+(!x1*x2*!x3*x4)+(!x1*x2*x3*!x4)',
-
-        '(!x1*!x2*!x3*x4)+(!x1*!x2*x3*!x4)+(!x1*x2*!x3*x4)+(x1*!x2*!x3*x4)+(!x1*x2*x3*!x4)',
-
-        '(!x1*!x2*!x3*!x4)+(!x1*!x2*x3*!x4)+(!x1*x2*!x3*!x4)+(x1*!x2*!x3*!x4)'
-        '+(x1*!x2*!x3*x4)+(!x1*x2*x3*!x4)'
+        '(!a*!b*p)+(!a*b*!p)+(a*!b*!p)+(a*b*p)',
+        '(!a*b*p)+(a*!b*p)+(a*b*!p)+(a*b*p)',
     ]
-    headers = ['y1', 'y2', 'y3', 'y4']
+    headers = ['res', 'tran']
+    #
+    # formulas = [
+    #     '(!x1*!x2*!x3*!x4)+(!x1*!x2*!x3*x4)+(!x1*!x2*x3*!x4)+(!x1*!x2*x3*x4)'
+    #     '+(!x1*x2*!x3*!x4)+(!x1*x2*!x3*x4)+(!x1*x2*x3*!x4)',
+    #
+    #     '(!x1*!x2*x3*x4)+(!x1*x2*!x3*!x4)+(!x1*x2*!x3*x4)+(!x1*x2*x3*!x4)',
+    #
+    #     '(!x1*!x2*!x3*x4)+(!x1*!x2*x3*!x4)+(!x1*x2*!x3*x4)+(x1*!x2*!x3*x4)+(!x1*x2*x3*!x4)',
+    #
+    #     '(!x1*!x2*!x3*!x4)+(!x1*!x2*x3*!x4)+(!x1*x2*!x3*!x4)+(x1*!x2*!x3*!x4)'
+    #     '+(x1*!x2*!x3*x4)+(!x1*x2*x3*!x4)'
+    # ]
 
     try:
         table = Table(formulas, headers)
-    except (ParseFormulaBreaksException, ParseFormulaOperatorsException, HeadersNumberException) as e:
+    except (ParseFormulaBreaksException, ParseFormulaOperatorsException) as e:
         print(e)
         return
 
+    print('Формулы:')
+    for header, formula in zip(table.header[1], formulas):
+        print(f'{header} = {formula}')
     print(f'Таблица истинности:\n{table.show()}\n')
     print(
         f'СДНФ:\n{print_normal_forms(PerfectForms.perfect_disjunctive(table))}\n'
