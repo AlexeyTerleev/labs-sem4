@@ -6,18 +6,18 @@ import gui.config as config
 sound_library = {}
 
 
-def print_text(text, x, y, font_color=(0, 0, 0), font_style=None, font_size=30, align='left'):
+def print_text(text, x, y, font_color=(0, 0, 0), font_style=None, font_size=30, align='left', screen=config.screen):
     font_type = pygame.font.Font(font_style, font_size)
     styled_text = font_type.render(text, True, font_color)
     if align == 'center':
         text_rect = styled_text.get_rect(center=(x, y))
-        config.screen.blit(styled_text, text_rect)
+        screen.blit(styled_text, text_rect)
     elif align == 'right':
         text_rect = styled_text.get_rect(bottomright=(x, y))
-        config.screen.blit(styled_text, text_rect)
+        screen.blit(styled_text, text_rect)
     elif align == 'left':
         text_rect = styled_text.get_rect(bottomleft=(x, y))
-        config.screen.blit(styled_text, text_rect)
+        screen.blit(styled_text, text_rect)
 
 
 def draw_react_with_border(surface, rect, background_color,

@@ -29,10 +29,10 @@ class CardImg:
 
         utils.print_text(text=self.card.number,
                          x=self.rect.x + self.rect.w // 2, y=self.rect.y + self.rect.h // 5,
-                         font_color=(0, 0, 0), font_size=self.font_size, align='center')
+                         font_color=(0, 0, 0), font_size=self.font_size, align='center', screen=screen)
         utils.print_text(text=self.card.account.login,
                          x=self.rect.x + self.font_size, y=self.rect.y + self.rect.h - self.font_size,
-                         font_color=(0, 0, 0), font_size=self.font_size, align='left')
+                         font_color=(0, 0, 0), font_size=self.font_size, align='left', screen=screen)
         utils.print_text(text=self.card.date,
                          x=self.rect.x + self.rect.w - self.font_size, y=self.rect.y + self.rect.h - self.font_size,
-                         font_color=(0, 0, 0), font_size=self.font_size, align='right')
+                         font_color=(0, 0, 0), font_size=self.font_size, align='right', screen=screen)

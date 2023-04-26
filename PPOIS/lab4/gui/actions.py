@@ -3,6 +3,7 @@ import pygame
 from gui.screen import Screen, stop_func
 from gui.button import Button
 from gui.input_box import InputBox
+from gui.scroll_area import ScrollBox
 from gui.text_box import TextBox
 from gui.info_box import InfoBox
 from gui.card import CardImg
@@ -10,6 +11,7 @@ from gui import config, utils
 
 
 def show_menu_call():
+
     atm_btn = Button(
         config.WIDTH // 4 - 100, config.HEIGHT // 2 - 100, 200, 200,
         text='ATM', border_radius=5,
@@ -39,6 +41,7 @@ def atm_open_func():
 
 
 def atm_insert_card_call():
+
     insert_card_btn = Button(
         int(0.335 * (config.WIDTH - 100)) + 50, int(0.38 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -69,6 +72,8 @@ def atm_insert_card_call():
 
 
 def atm_input_pin_call():
+
+    error_info_box = InfoBox('Wrong PIN', background_color=(255, 0, 0), border_radius=5)
     input_box = InputBox(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.38 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -101,7 +106,11 @@ def atm_input_pin_call():
         utils.draw_background(config.screen, 'Вас приветствует АльфаБанк, введите PIN - код')
 
         input_box.update()
-        verify_pin_btn.update(pin=input_box.text)
+        verify_pin_btn.update(pin=input_box.text, error=error_info_box)
+        error_info_box.update()
+
+        if error_info_box.active:
+            error_info_box.draw(config.screen)
 
         input_box.draw(config.screen)
         verify_pin_btn.draw(config.screen)
@@ -113,26 +122,30 @@ def atm_input_pin_call():
     atm_input_pin_screen()
 
 
-def atm_verify_pin_func(pin: str):
+def atm_verify_pin_func(pin: str, error: InfoBox):
     if config.ATM.input_pin(pin):
         atm_menu_call()
     else:
-        ...
+        error.trigger()
 
 
 def atm_choose_card_call():
-    positions = [(50 + (1 if i % 2 == 0 else 3) * (config.WIDTH - 100) // 4 - 125,
-                  120 + i // 2 * 170) for i in range(len(config.CARDS))]
+
+    positions = [((1 if i % 2 == 0 else 3) * (config.WIDTH - 200) // 4 - 125,
+                  10 + i // 2 * 170) for i in range(len(config.CARDS))]
 
     cards = [CardImg(card, *pos) for card, pos in zip(config.CARDS, positions)]
+
+    scroll_box = ScrollBox(100, 150, config.WIDTH - 200, config.HEIGHT - 200, config.WIDTH - 200, config.HEIGHT, cards)
 
     @Screen([pygame.K_ESCAPE], [card.handle_event for card in cards])
     def atm_choose_card_screen(*args, **kwargs):
 
         utils.draw_background(config.screen, 'Вас приветствует АльфаБанк, выберите карту')
 
-        for card in cards:
-            card.draw(config.screen)
+        scroll_box.update()
+
+        scroll_box.draw(config.screen)
 
         for card in cards:
             if card.chosen:
@@ -207,12 +220,12 @@ def atm_balance_call():
 
 
 def atm_put_money_call():
+    error_info_box = InfoBox('Wrong SUMM', background_color=(255, 0, 0), border_radius=5)
     input_box = InputBox(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.38 * (config.HEIGHT - 100)) + 50,
         int(0.69 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
         border_radius=5
     )
-
     confirm_btn = Button(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.52 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -231,7 +244,11 @@ def atm_put_money_call():
         utils.draw_background(config.screen, 'Введите сумму для пополнения')
 
         input_box.update()
-        confirm_btn.update(money=input_box.text)
+        confirm_btn.update(money=input_box.text, error=error_info_box)
+        error_info_box.update()
+
+        if error_info_box.active:
+            error_info_box.draw(config.screen)
 
         input_box.draw(config.screen)
         confirm_btn.draw(config.screen)
@@ -240,21 +257,20 @@ def atm_put_money_call():
     atm_put_money_screen()
 
 
-def atm_put_money_func(money: str):
+def atm_put_money_func(money: str, error: InfoBox):
     if config.ATM.put_money(money):
         stop_func()
     else:
-        err = InfoBox(text='error')
-        err.call(config.screen)
+        error.trigger()
 
 
 def atm_get_money_call():
+    error_info_box = InfoBox('Wrong SUMM', background_color=(255, 0, 0), border_radius=5)
     input_box = InputBox(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.38 * (config.HEIGHT - 100)) + 50,
         int(0.69 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
         border_radius=5
     )
-
     confirm_btn = Button(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.52 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -273,7 +289,11 @@ def atm_get_money_call():
         utils.draw_background(config.screen, 'Введите сумму для снятия')
 
         input_box.update()
-        confirm_btn.update(money=input_box.text)
+        confirm_btn.update(money=input_box.text, error=error_info_box)
+        error_info_box.update()
+
+        if error_info_box.active:
+            error_info_box.draw(config.screen)
 
         input_box.draw(config.screen)
         confirm_btn.draw(config.screen)
@@ -282,9 +302,11 @@ def atm_get_money_call():
     atm_get_money_screen()
 
 
-def atm_get_money_func(money: str):
+def atm_get_money_func(money: str, error: InfoBox):
     if config.ATM.get_money(money):
         stop_func()
+    else:
+        error.trigger()
 
 
 def bank_open_func():
@@ -330,6 +352,7 @@ def bank_login_register_call():
 
 
 def bank_register_call():
+    error_info_box = InfoBox('This login is already used', background_color=(255, 0, 0), border_radius=5)
     login_lable = TextBox(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.36 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -340,7 +363,6 @@ def bank_register_call():
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
         border_radius=5
     )
-
     password_lable = TextBox(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.5 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -351,7 +373,6 @@ def bank_register_call():
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
         border_radius=5
     )
-
     confirm_btn = Button(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.64 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -371,8 +392,11 @@ def bank_register_call():
 
         login_input_box.update()
         password_input_box.update()
+        confirm_btn.update(login=login_input_box.text, password=password_input_box.text, error=error_info_box)
+        error_info_box.update()
 
-        confirm_btn.update(login=login_input_box.text, password=password_input_box.text)
+        if error_info_box.active:
+            error_info_box.draw(config.screen)
 
         login_lable.draw(config.screen)
         password_lable.draw(config.screen)
@@ -384,12 +408,15 @@ def bank_register_call():
     bank_register_screen()
 
 
-def bank_register_func(login: str, password: str):
+def bank_register_func(login: str, password: str, error: InfoBox):
     if config.BANK.register_acc(login, password):
         stop_func()
+    else:
+        error.trigger()
 
 
 def bank_login_call():
+    error_info_box = InfoBox('Wrong login or password', background_color=(255, 0, 0), border_radius=5)
     login_lable = TextBox(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.36 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -400,7 +427,6 @@ def bank_login_call():
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
         border_radius=5
     )
-
     password_lable = TextBox(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.5 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -411,7 +437,6 @@ def bank_login_call():
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
         border_radius=5
     )
-
     verify_btn = Button(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.64 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -431,8 +456,11 @@ def bank_login_call():
 
         login_input_box.update()
         password_input_box.update()
+        verify_btn.update(login=login_input_box.text, password=password_input_box.text, error=error_info_box)
+        error_info_box.update()
 
-        verify_btn.update(login=login_input_box.text, password=password_input_box.text)
+        if error_info_box.active:
+            error_info_box.draw(config.screen)
 
         login_lable.draw(config.screen)
         login_input_box.draw(config.screen)
@@ -444,9 +472,11 @@ def bank_login_call():
     bank_login_screen()
 
 
-def bank_login_func(login: str, password: str):
+def bank_login_func(login: str, password: str, error: InfoBox):
     if config.BANK.login(login, password):
         stop_func()
+    else:
+        error.trigger()
 
 
 def bank_homepage_call():
@@ -484,6 +514,7 @@ def bank_homepage_call():
 
 
 def bank_register_card_call():
+    error_info_box = InfoBox('Wrong PIN', background_color=(255, 0, 0), border_radius=5)
     pin_lable = TextBox(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.38 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -512,8 +543,11 @@ def bank_register_card_call():
         utils.draw_background(config.screen, 'Регистрация карты')
 
         input_box.update()
+        confirm_btn.update(pin=input_box.text, error=error_info_box)
+        error_info_box.update()
 
-        confirm_btn.update(pin=input_box.text)
+        if error_info_box.active:
+            error_info_box.draw(config.screen)
 
         pin_lable.draw(config.screen)
         input_box.draw(config.screen)
@@ -523,9 +557,10 @@ def bank_register_card_call():
     bank_register_card_screen()
 
 
-def bank_register_card_func(pin: str):
+def bank_register_card_func(pin: str, error: InfoBox):
     if config.BANK.register_card(pin):
         stop_func()
+    else:
+        error.trigger()
 
 # Структурировать код (actions.py)
-# Дораотать всплывающие уведомления ('Опреация проведена успешно', 'Ошибка')
