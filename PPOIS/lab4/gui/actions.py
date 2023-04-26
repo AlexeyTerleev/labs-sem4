@@ -11,7 +11,6 @@ from gui import config, utils
 
 
 def show_menu_call():
-
     atm_btn = Button(
         config.WIDTH // 4 - 100, config.HEIGHT // 2 - 100, 200, 200,
         text='ATM', border_radius=5,
@@ -41,7 +40,6 @@ def atm_open_func():
 
 
 def atm_insert_card_call():
-
     insert_card_btn = Button(
         int(0.335 * (config.WIDTH - 100)) + 50, int(0.38 * (config.HEIGHT - 100)) + 50,
         int(0.33 * (config.WIDTH - 100)), int(0.1 * (config.HEIGHT - 100)),
@@ -72,7 +70,6 @@ def atm_insert_card_call():
 
 
 def atm_input_pin_call():
-
     error_info_box = InfoBox('Wrong PIN', background_color=(255, 0, 0), border_radius=5)
     input_box = InputBox(
         int(0.16 * (config.WIDTH - 100)) + 50, int(0.38 * (config.HEIGHT - 100)) + 50,
@@ -130,15 +127,19 @@ def atm_verify_pin_func(pin: str, error: InfoBox):
 
 
 def atm_choose_card_call():
-
     positions = [((1 if i % 2 == 0 else 3) * (config.WIDTH - 200) // 4 - 125,
                   10 + i // 2 * 170) for i in range(len(config.CARDS))]
 
     cards = [CardImg(card, *pos) for card, pos in zip(config.CARDS, positions)]
 
-    scroll_box = ScrollBox(100, 150, config.WIDTH - 200, config.HEIGHT - 200, config.WIDTH - 200, config.HEIGHT, cards)
+    scroll_box = ScrollBox(
+        100, 150,
+        config.WIDTH - 200, min(config.HEIGHT - 200, 10 + (len(config.CARDS) // 2 + len(config.CARDS) % 2) * 170),
+        config.WIDTH - 200, 10 + (len(config.CARDS) // 2 + len(config.CARDS) % 2) * 170,
+        cards
+    )
 
-    @Screen([pygame.K_ESCAPE], [card.handle_event for card in cards])
+    @Screen([pygame.K_ESCAPE], [scroll_box.handle_event])
     def atm_choose_card_screen(*args, **kwargs):
 
         utils.draw_background(config.screen, 'Вас приветствует АльфаБанк, выберите карту')
@@ -563,4 +564,4 @@ def bank_register_card_func(pin: str, error: InfoBox):
     else:
         error.trigger()
 
-# Структурировать код (actions.py)
+# Пофиксить скрол

@@ -21,13 +21,6 @@
     ],
     "cards": [
         {
-            "number": "00000000",
-            "cvv": "571",
-            "date": "4/2028",
-            "pin": "1234",
-            "account_id": 0
-        },
-        {
             "number": "00000001",
             "cvv": "089",
             "date": "4/2028",
@@ -56,15 +49,15 @@
             "account_id": 2
         },
         {
-            "number": "00000005",
-            "cvv": "808",
+            "number": "00000007",
+            "cvv": "172",
             "date": "4/2028",
-            "pin": "1212",
+            "pin": "1234",
             "account_id": 2
         }
     ],
     "repo": 2660,
-    "card_id_tf": 6,
+    "card_id_tf": 8,
     "account_id_tf": 3,
     "atm-state": {
         "inserted": false,
