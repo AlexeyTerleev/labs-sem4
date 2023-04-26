@@ -1,0 +1,22 @@
+nrel_location
+	=> nrel_main_idtf: [Расположение*] (* <- lang_ru;;*);;
+
+concept_Minsk
+	=>nrel_main_idtf: [Минск] (* <- lang_ru;; *);;
+
+concept_Homel
+	=>nrel_main_idtf: [Гомель] (* <- lang_ru;; *);;
+
+concept_Grodno
+	=>nrel_main_idtf: [Гродно] (* <- lang_ru;; *);;
+
+concept_Brest
+	=>nrel_main_idtf: [Брест] (* <- lang_ru;; *);;
+
+concept_Mogilev
+	=>nrel_main_idtf: [Могилев] (* <- lang_ru;; *);;
+
+concept_Vitebsk
+	=>nrel_main_idtf: [Витебск] (* <- lang_ru;; *);;
+
+

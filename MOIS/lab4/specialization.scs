@@ -1,0 +1,18 @@
+nrel_specialization
+	=> nrel_main_idtf: [Специализация*] (* <-lang_ru;; *);;
+
+
+italian
+	=> nrel_main_idtf: [итальянская] (* <-lang_ru;; *);;
+spainish
+	=> nrel_main_idtf: [испанская] (* <-lang_ru;; *);;
+georgian
+	=> nrel_main_idtf: [грузинская] (* <-lang_ru;; *);;
+japanise
+	=> nrel_main_idtf: [японская] (* <-lang_ru;; *);;
+belorussian
+	=> nrel_main_idtf: [белорусская] (* <-lang_ru;; *);;
+russian
+	=> nrel_main_idtf: [русская] (* <-lang_ru;; *);;
+fastfood
+	=> nrel_main_idtf: [фастфуд] (* <-lang_ru;; *);;

@@ -1,0 +1,10 @@
+nrel_service
+	=> nrel_main_idtf: [вид обслуживания*] (* <-lang_ru;;*);;
+
+self
+	=> nrel_main_idtf: [самообслуживание] (* <-lang_ru;;*);;
+
+staff                          
+        => nrel_main_idtf: [обслуживание персоналом*] (* <-lang_ru;;*);;
+
+

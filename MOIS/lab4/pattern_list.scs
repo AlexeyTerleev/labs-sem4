@@ -1,0 +1,25 @@
+lab_patterns
+    => nrel_main_idtf: [Шаблоны для поиска по БЗ] (* <- lang_ru;; *);
+
+    -> pattern1;
+    -> pattern2;    
+    -> pattern3;
+    -> pattern4;
+    -> pattern5;
+    -> pattern6;
+    -> pattern7;
+    -> pattern8;
+    -> pattern9;
+    -> pattern10;;
+
+
+pattern1 => nrel_main_idtf: [Найти все рестораны, специализирующиеся на японской кухне] (* <- lang_ru;; *);;
+pattern2 => nrel_main_idtf: [Отобразить все названия ресторанов] (* <- lang_ru;; *);;
+pattern3 => nrel_main_idtf: [Найти все рестораны, расположенные в Минске] (* <- lang_ru;; *);;
+pattern4 => nrel_main_idtf: [Найти все рестораны, которые расположены в Минске и в Гомеле одновременно] (* <- lang_ru;; *);;
+pattern5 => nrel_main_idtf: [Найти все рестораны с самообслуживанием] (* <- lang_ru;; *);;
+pattern6 => nrel_main_idtf: [Найти все рестораны с обслуживающим персоналом] (* <- lang_ru;; *);;
+pattern7 => nrel_main_idtf: [Найти все рестораны, специализирующиеся на грузинской кухне] (* <- lang_ru;; *);;
+pattern8 => nrel_main_idtf: [Найти все рестораны, специализирующиеся на русской и белорусской кухне одновременно] (* <- lang_ru;; *);;
+pattern9 => nrel_main_idtf: [Найти все рестораны, расположенные в Гомеле] (* <- lang_ru;; *);;
+pattern10 => nrel_main_idtf: [Найти все рестораны, специализирующиеся на белорусской кухне] (* <- lang_ru;; *);;

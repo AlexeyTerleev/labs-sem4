@@ -1,0 +1,113 @@
+// Section 
+
+section_subject_domain_of_restaurant
+	=> nrel_main_idtf: [Раздел. Предметная область ресторан] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [Section. Subject damoin of restaurant] (* <- lang_en;; *);
+
+	<- non_atomic_section;
+
+	<= nrel_section_decomposition: 
+		section_kitchen;
+		section_service_staff;
+		section_hall;
+
+
+	-> rrel_key_sc_element: {
+		lab_patterns;	
+
+		concept_name;
+		concept_menu;
+
+		subject_domain_of_restaurant
+	};;
+
+section_kitchen
+	<- sc_node_not_relation;
+	=> nrel_main_idtf: [Раздел. Кухня] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [Section Kitchen] (* <- lang_en;; *);;
+
+section_service_staff
+	<- sc_node_not_relation;
+	=> nrel_main_idtf: [Раздел. Обслуживающий персонал] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [Section Service staff] (* <- lang_en;; *);;
+
+section_hall
+	<- sc_node_not_relation;
+	=> nrel_main_idtf: [Раздел. Зал] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [Section Hall] (* <- lang_en;; *);;
+
+// Key sc elements 
+
+concept_name
+	<-sc_node_not_relation;
+	=> nrel_main_idtf: [Название] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [Name] (* <- lanr_en;; *);;
+
+concept_menu
+	<-sc_node_not_relation;
+	=> nrel_main_idtf: [Меню] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [Menu] (* <- lanr_en;; *);;
+
+
+// Subject domain
+section_subject_domain_of_restaurant = [*
+	subject_domain_of_restaurant
+			
+		<- sc_node_not_relation;
+		<- subject_domain;
+
+		=> nrel_main_idtf: [Предметная область ресторан] (* <- lang_ru;; *);
+		=> nrel_main_idtf: [Subject domain of restaurant] (* <- lang_en;; *);
+
+		-> rrel_maximum_studied_object_class:
+			cocnept_restaurant;
+
+		<- rrel_not_maximum_studied_object_class:
+			concept_city;
+			concept_name;
+
+		-> rrel_studied_relation:
+			nrel_spaces;
+			nrel_specialization;
+			nrel_location;
+
+		=> nrel_private_subject_domain:
+			subject_domain_of_kitchen;
+			subject_domain_of_hall;
+			subject_domain_of_service_staff;;
+
+*];;
+
+
+subject_domain_of_kitchen
+	<- sc_node_not_relation;
+	=> nrel_main_idtf: [Предметная область Кухня] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [Subject domain of Kitchen] (* <- lang_en;; *);;
+
+subject_domain_of_hall
+	<- sc_node_not_relation;
+	=> nrel_main_idtf: [Предметная область Зал] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [Subject domain of Hall] (* <- lang_en;; *);;
+
+subject_domain_of_service_staff
+	<- sc_node_not_relation;
+	=> nrel_main_idtf: [Предметная область Обслуживающий персонал] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [Subject domain of Service staff] (* <- lang_en;; *);;
+
+
+nrel_spaces
+	<- sc_node_norole_relation;
+	=> nrel_main_idtf: [Пространство*] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [spaces*] (* <- lang_en;; *);;
+
+nrel_specialization
+	<- sc_node_norole_relation;
+	=> nrel_main_idtf: [Специализация*] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [Specialization*] (* <- lang_en;; *);;
+
+nrel_location
+	<- sc_node_norole_relation;
+	=> nrel_main_idtf: [Место расположения*] (* <- lang_ru;; *);
+	=> nrel_main_idtf: [Location*] (* <- lang_en;; *);;
+
+

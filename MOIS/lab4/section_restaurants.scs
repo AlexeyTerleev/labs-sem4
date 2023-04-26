@@ -1,0 +1,121 @@
+section_restaurants
+	-> kaif;
+	-> batski;
+	-> lido;
+	-> kfc; 
+	-> himkalnia;
+	-> vasilky;
+	-> bntu_restaurant;
+	-> TokiNY;
+	-> ronin;;
+
+kaif
+	=> nrel_main_idtf: [Кайф] (* <- lang_ru;; *);
+	=> nrel_location: 
+		concept_Homel;
+	=> nrel_specialization:
+		russian;
+		belorussian;
+	=> nrel_service:
+		staff;
+
+	<-concept_restaurant;;
+
+batski
+        => nrel_main_idtf: [Батьки] (* <- lang_ru;; *);     
+        => nrel_location: 
+		concept_Homel;      
+        => nrel_specialization:    
+                belorussian;
+	=> nrel_service:
+                staff;
+
+        <-concept_restaurant;;
+
+lido    
+        => nrel_main_idtf: [Лидо] (* <- lang_ru;; *);     
+        => nrel_location: 
+		concept_Minsk;
+		concept_Homel;
+		concept_Vitebsk;
+        => nrel_specialization:
+                russian;    
+                belorussian;
+		georgian;
+        => nrel_service:
+                staff;
+
+        <-concept_restaurant;; 
+
+kfc     
+        => nrel_main_idtf: [КФС] (* <- lang_ru;; *);     
+        => nrel_location: 
+		concept_Minsk;
+		concept_Homel;
+		concept_Grodno;
+		concept_Brest;
+		concept_Mogilev;
+		concept_Vitebsk;
+        => nrel_specialization:
+                fastfood;
+        => nrel_service:
+                self;
+
+        <-concept_restaurant;;                   
+        
+himkalnia
+        => nrel_main_idtf: [Хинкальня] (* <- lang_ru;; *);     
+        => nrel_location: concept_Minsk;      
+        => nrel_specialization:
+                georgian;
+        => nrel_service:
+                staff;
+
+        <-concept_restaurant;; 
+        
+vasilky    
+        => nrel_main_idtf: [Васильки] (* <- lang_ru;; *);     
+        => nrel_location: 
+		concept_Minsk;
+		concept_Homel;
+        => nrel_specialization:
+                russian;    
+                belorussian;
+        => nrel_service:
+                staff;
+
+        <-concept_restaurant;; 
+
+bntu_restaurant     
+        => nrel_main_idtf: [Ресторан БНТУ] (* <- lang_ru;; *);     
+        => nrel_location: 
+		concept_Minsk;      
+        => nrel_specialization:
+                italian;    
+                belorussian;
+        => nrel_service:
+                staff;
+
+        <-concept_restaurant;;                   
+        
+TokiNY
+        => nrel_main_idtf: [ТокиНЮ] (* <- lang_ru;; *);     
+        => nrel_location: 
+		concept_Minsk;      
+        => nrel_specialization:
+                japanise;
+        => nrel_service:
+                staff;
+
+        <-concept_restaurant;; 
+        
+ronin    
+        => nrel_main_idtf: [Ронин] (* <- lang_ru;; *);     
+        => nrel_location: 
+		concept_Minsk;      
+        => nrel_specialization:
+                japanise;
+        => nrel_service:
+                staff;
+
+        <-concept_restaurant;; 
