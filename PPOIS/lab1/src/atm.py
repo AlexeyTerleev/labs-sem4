@@ -1,5 +1,6 @@
-from repository import Repository
-from card import Card
+from src.repository import Repository
+from src.card import Card
+
 
 class ATM:
 
@@ -21,7 +22,7 @@ class ATM:
             number = self.__card.number
         dct = {
             "inserted": self.__inserted,
-            "card-number": number,
+            "card.py-number": number,
             "access": self.__access
         }
         return dct
@@ -64,29 +65,31 @@ class ATM:
 
         print(f'Карта {card.number} была извлечена')
 
-    def input_pin(self, pin: str):
+    def input_pin(self, pin: str) -> bool:
 
         if not self.__inserted:
             print(f'Для начала вставьте карту!')
-            return
+            return False
 
         if self.__access:
             print(f'Вы уже разблокировали карту!')
-            return
+            return False
 
         if len(pin) != 4:
             print('PIN - код должен состоять из 4 цифр!')
-            return
+            return False
 
         if not pin.isdigit():
             print('PIN - код должен состоять только из цифр!')
-            return
+            return False
 
         if self.__card.get_access(pin):
             self.__access = True
             print('Доступ разрешен')
+            return True
         else:
             print('Неверный PIN-код')
+            return False
 
     def card_balance(self):
 
@@ -100,53 +103,56 @@ class ATM:
 
         print(f'Баланс на карте {self.__card.number}: {self.__card.account.balance}')
 
-    def put_money(self, money_str: str):
+        return self.__card.account.balance
+
+    def put_money(self, money_str: str) -> bool:
 
         if not self.__inserted:
             print(f'Для начала вставьте карту!')
-            return
+            return False
 
         if not self.__access:
             print(f'Для начала введите PIN - код!')
-            return
+            return False
 
         if not money_str.isdigit():
             print('Сумма должна быть положительным числом!')
-            return
+            return False
 
         money = int(money_str)
 
         if money <= 0:
             print(f'Сумма должна быть больше нуля!')
-            return
+            return False
 
         self.__card.account.increase_balance(money)
         self.__repository.put_money(money)
 
         print('Операция проведена успешно!')
+        return True
 
-    def get_money(self, money_str: str):
+    def get_money(self, money_str: str) -> bool:
 
         if not self.__inserted:
             print(f'Для начала вставьте карту!')
-            return
+            return False
 
         if not self.__access:
             print(f'Для начала введите PIN - код!')
-            return
+            return False
 
         if not money_str.isdigit():
             print('Сумма должна быть положительным числом!')
-            return
+            return False
 
         money = int(money_str)
 
         if money <= 0:
             print(f'Сумма должна быть больше нуля!')
-            return
+            return False
         if money > self.__card.account.balance:
             print(f'Недостаточно средств на счете (остаток на счете {self.__card.account.balance})')
-            return
+            return False
         if money > self.__repository.money:
             print(f'Недостаточно купюр в банкомате (доступно к обналичиванию {self.__repository.money})')
 
@@ -154,3 +160,4 @@ class ATM:
         self.__card.account.decrease_balance(money)
 
         print('Операция проведена успешно!')
+        return True

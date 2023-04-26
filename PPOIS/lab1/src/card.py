@@ -1,6 +1,7 @@
-from account import Account
+from src.account import Account
 import datetime
 from random import randint
+
 
 class Card:
 
