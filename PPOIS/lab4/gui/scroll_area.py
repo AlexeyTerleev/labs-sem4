@@ -16,12 +16,9 @@ class ScrollBox:
         self.visible_surface = pygame.Surface((width, height))
 
         self.slider_x = pygame.Rect(0, height - 15, int((width / real_width) * width), 15)
-
         self.slider_y = pygame.Rect(width - 15, 0, 15, int((height / real_height) * height))
-
         self.slider_x_active = False
         self.slider_x_activate_point = None
-
         self.slider_y_active = False
         self.slider_y_activate_point = None
 

@@ -11,7 +11,7 @@ timer = 0.0
 clock = time.time()
 
 pygame.init()
-pygame.display.set_caption("lab4")
+pygame.display.set_caption("ATM model")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 ACCOUNTS = None
