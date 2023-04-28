@@ -16,11 +16,13 @@ def main():
     # formulas = ['a > !((b + c) > (a * c + b))']
     # headers = ['res']
     #
-    formulas = [
-        '(!a*!b*p)+(!a*b*!p)+(a*!b*!p)+(a*b*p)',
-        '(!a*b*p)+(a*!b*p)+(a*b*!p)+(a*b*p)',
-    ]
-    headers = ['res', 'tran']
+    # LR4
+    #
+    # formulas = [
+    #     '(!a*!b*p)+(!a*b*!p)+(a*!b*!p)+(a*b*p)',
+    #     '(!a*b*p)+(a*!b*p)+(a*b*!p)+(a*b*p)',
+    # ]
+    # headers = ['res', 'tran']
     #
     # formulas = [
     #     '(!x1*!x2*!x3*!x4)+(!x1*!x2*!x3*x4)+(!x1*!x2*x3*!x4)+(!x1*!x2*x3*x4)'
@@ -33,6 +35,21 @@ def main():
     #     '(!x1*!x2*!x3*!x4)+(!x1*!x2*x3*!x4)+(!x1*x2*!x3*!x4)+(x1*!x2*!x3*!x4)'
     #     '+(x1*!x2*!x3*x4)+(!x1*x2*x3*!x4)'
     # ]
+    #
+    # LR5
+    #
+    formulas = [
+        '!q1*!q2*!q3*!q4*v+q1*q2*q3*q4*v+!q1*q2*q3*q4*v+q1*!q2*q3*q4*v+!q1*!q2*q3*q4*v+'
+        'q1*q2*!q3*q4*v+!q1*q2*!q3*q4*v+q1*!q2*!q3*q4*v+!q1*!q2*!q3*q4*v+q1*q2*q3*!q4*v+'
+        '!q1*q2*q3*!q4*v+q1*!q2*q3*!q4*v+!q1*!q2*q3*!q4*v+q1*q2*!q3*!q4*v+!q1*q2*!q3*!q4*v+q1*!q2*!q3*!q4*v',
+
+        '!q1*!q2*!q3*!q4*v+!q1*q2*q3*q4*v+!q1*!q2*q3*q4*v+!q1*q2*!q3*q4*v+'
+        '!q1*!q2*!q3*q4*v+!q1*q2*q3*!q4*v+!q1*!q2*q3*!q4*v+!q1*q2*!q3*!q4*v',
+
+        '!q1*!q2*!q3*!q4*v+!q1*!q2*q3*q4*v+!q1*!q2*!q3*q4*v+!q1*!q2*q3*!q4*v',
+
+        '!q1*!q2*!q3*!q4*v+!q1*!q2*!q3*q4*v'
+    ]
 
     try:
         table = Table(formulas, headers)
@@ -48,10 +65,10 @@ def main():
         f'СДНФ:\n{print_normal_forms(PerfectForms.perfect_disjunctive(table))}\n'
         # f'СКНФ:\n{print_normal_forms(PerfectForms.perfect_conjunctive(table))}\n'
         # f'\n'
-        # f'ТДНФ (расчетный метод):\n{print_normal_forms(Estimated.minimized_disjunctive(table))}\n'
+        f'ТДНФ (расчетный метод):\n{print_normal_forms(Estimated.minimized_disjunctive(table))}\n'
         # f'ТКНФ (расчетный метод):\n{print_normal_forms(Estimated.minimized_conjunctive(table))}\n'
         # f'\n'
-        # f'ТДНФ (метод Квайна-Мак-Класски):\n{print_normal_forms(Quine_McCluskey.minimized_disjunctive(table))}\n'
+        f'ТДНФ (метод Квайна-Мак-Класски):\n{print_normal_forms(Quine_McCluskey.minimized_disjunctive(table))}\n'
         # f'ТКНФ (метод Квайна-Мак-Класски):\n{print_normal_forms(Quine_McCluskey.minimized_conjunctive(table))}\n'
     )
     try:
