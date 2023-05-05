@@ -5,6 +5,7 @@ def main():
     hash_table = HashTable(
         [
             ('Аня', 'волейбол'),
+            ('Аня', '123456789'),
             ('Даша', 'волейбол'),
             ('Маша', 'футбол'),
             ('Катя', 'футбол'),
@@ -18,10 +19,25 @@ def main():
         ]
     )
 
-    print(len(hash_table.table))
     print(hash_table.table)
 
-    print(hash_table['Ваня'])
+    print(f"hash_table['Ваня'] = {hash_table['Ваня']}")
+    assert hash_table['Ваня'] == 'плавание'
+
+    print(f"hash_table.insert('Ваня', 'test')")
+    hash_table.insert('Ваня', 'test')
+
+    print(f"hash_table['Ваня'] = {hash_table['Ваня']}")
+    assert hash_table['Ваня'] == 'test'
+
+    print(f"hash_table.delete('Ваня')")
+    hash_table.delete('Ваня')
+
+    print(f"hash_table['Ваня'] = ")
+    try:
+        assert hash_table['Ваня'] == 'test'
+    except KeyError:
+        print('Нет ключа')
 
 
 if __name__ == '__main__':

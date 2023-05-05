@@ -39,7 +39,7 @@ class HashTable:
 
     def insert(self, key: Hashable, value: Any):
         try:
-            self.table[self.get_hash(key)][self.get_index(key)] = value
+            self.table[self.get_hash(key)][self.get_index(key)] = (key, value)
         except KeyError:
             self.table[self.get_hash(key)].append((key, value))
             self.fullness += 1
