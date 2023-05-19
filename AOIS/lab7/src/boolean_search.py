@@ -1,9 +1,11 @@
 from inspect import signature
-from src.utils import get_binary
+from typing import Tuple, List, Callable
 
 
-def boolean_search(lst, boolean_func):
-    for x in lst:
-        if len(get_binary(x)) != len(signature(boolean_func).parameters):
+def boolean_search(bin_lst: List[Tuple[int]], boolean_func: Callable):
+    for x in bin_lst:
+        if len(x) != len(signature(boolean_func).parameters):
             raise ValueError
-    return (x for x in lst if boolean_func(*get_binary(x)))
+    for x in bin_lst:
+        if boolean_func(*x):
+            return x
