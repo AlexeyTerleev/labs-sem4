@@ -1,5 +1,5 @@
 from typing import Tuple, List
-from src.utils import get_binary, sum_binary
+from src.utils import get_binary, sum_binary, compare
 
 
 class DiagonalMatrix:
@@ -31,33 +31,24 @@ class DiagonalMatrix:
             self.fill(el, i)
             return
 
-    def compare(self, ind_1: int, ind_2: int):
-        for pair in zip(self.matrix[ind_1], self.matrix[ind_2]):
-            if pair[0] > pair[1]:
-                return True
-            elif pair[1] < pair[0]:
-                return False
-        return False
-
     def sort(self):
         for i in range(self.size):
             for j in range(i + 1, self.size):
-                comparison_result = self.compare(i, j)
-                if not comparison_result:
-                    tmp = self[i]
-                    self.fill(self[j], i)
-                    self.fill(tmp, j)
+                if not compare(self[i], self[j]):
+                    first, second = self[i], self[j]
+                    self.fill(first, j)
+                    self.fill(second, i)
 
     def func_4(self, ind_1, ind_2, ind_3):
-        self.fill([not self[ind_1][i] and self[ind_2][i] for i in range(self.size)], ind_3)
+        self.fill([int(not self[ind_1][i] and self[ind_2][i]) for i in range(self.size)], ind_3)
 
     def func_6(self, ind_1, ind_2, ind_3):
-        self.fill([(not self[ind_1][i] and self[ind_2][i]) or (self[ind_1][i] and not self[ind_2][i])
+        self.fill([int((not self[ind_1][i] and self[ind_2][i]) or (self[ind_1][i] and not self[ind_2][i]))
                    for i in range(self.size)], ind_3)
 
     def func_9(self, ind_1, ind_2, ind_3):
-        self.fill([(self[ind_1][i] and self[ind_2][i]) or (not self[ind_1][i] and not self[ind_2][i])
+        self.fill([int((self[ind_1][i] and self[ind_2][i]) or (not self[ind_1][i] and not self[ind_2][i]))
                    for i in range(self.size)], ind_3)
 
     def func_11(self, ind_1, ind_2, ind_3):
-        self.fill([self[ind_1][i] and not self[ind_2][i] for i in range(self.size)], ind_3)
+        self.fill([int(self[ind_1][i] and not self[ind_2][i]) for i in range(self.size)], ind_3)

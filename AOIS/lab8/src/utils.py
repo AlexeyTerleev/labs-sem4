@@ -57,3 +57,12 @@ def sum_binary(first, second):
     return out[::-1]
 
 
+def compare(first: List[int], second: List[int]):
+    for pair in zip(first, second):
+        if pair[0] > pair[1]:
+            return True
+        elif pair[0] < pair[1]:
+            return False
+    return False
+
+
