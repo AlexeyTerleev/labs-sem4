@@ -24,6 +24,8 @@ def test2():
     matrix.sort()
     print(f'Отсортированная матрица с диагнальной адресацией:\n{matrix}')
 
+    print(f'Исходные значения в десятичной системе:\n{lst}\nОтсортированные:\n{[get_int(x) for x in matrix]}')
+
     assert [get_int(x) for x in matrix] == sorted(lst, reverse=False)
 
 
@@ -67,6 +69,15 @@ def test6():
           f'(x1 - 0й стобец, x2 - 1й столбец, f4 - 2й столбец):\n{matrix}')
 
 
+def test7():
+    print('\nТест 6 (сумма [0, 0, 1])\n')
+    lst = [randint(0, 65000) for _ in range(16)]
+    matrix = DiagonalMatrix(lst)
+    print(f'Исходная матрица с диагнальной адресацией:\n{matrix}\n')
+    matrix.sum([0, 0, 1])
+    print(f'Матрица после суммы:\n{matrix}')
+
+
 def main():
     test1()
     test2()
@@ -74,6 +85,7 @@ def main():
     test4()
     test5()
     test6()
+    test7()
 
 
 if __name__ == '__main__':
