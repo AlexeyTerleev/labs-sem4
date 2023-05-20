@@ -22,7 +22,7 @@ def test2():
 
     print(f'Исходная матрица с диагнальной адресацией:\n{matrix}\n')
     matrix.sort()
-    print(f'Отсортированная матрица с диагнальным сдвигом:\n{matrix}')
+    print(f'Отсортированная матрица с диагнальной адресацией:\n{matrix}')
 
     assert [get_int(x) for x in matrix] == sorted(lst, reverse=False)
 
