@@ -1,31 +1,79 @@
+from random import randint
+
 from src.utils import *
 from src.diagonal_matrix import DiagonalMatrix
 
-from random import randint
+
+def test1():
+    print('\nТест 1 (построение матрицы)\n')
+    lst = [randint(0, 65000) for _ in range(16)]
+    matrix = DiagonalMatrix(lst)
+
+    print(f'Обычная матрица:\n{chr(10).join(" ".join(str(el) for el in line) for line in get_normal_matrix(lst))}\n')
+    print(f'Матрица с диагнальной адресацией:\n{matrix}')
+
+    assert [get_int(x) for x in matrix] == lst
+
+
+def test2():
+    print('\nТест 2 (сортировка матрицы)\n')
+    lst = [randint(0, 65000) for _ in range(16)]
+    matrix = DiagonalMatrix(lst)
+
+    print(f'Исходная матрица с диагнальной адресацией:\n{matrix}\n')
+    matrix.sort()
+    print(f'Отсортированная матрица с диагнальным сдвигом:\n{matrix}')
+
+    assert [get_int(x) for x in matrix] == sorted(lst, reverse=False)
+
+
+def test3():
+    print('\nТест 3 (логическая функция f4)\n')
+    lst = [randint(0, 65000) for _ in range(16)]
+    matrix = DiagonalMatrix(lst)
+    print(f'Исходная матрица с диагнальной адресацией:\n{matrix}\n')
+    matrix.bool_func_4(0, 1, 2)
+    print(f'Матрица после проведения логической функции f4 = !x1 * x2 '
+          f'(x1 - 0й стобец, x2 - 1й столбец, f4 - 2й столбец):\n{matrix}')
+
+
+def test4():
+    print('\nТест 4 (логическая функция f6)\n')
+    lst = [randint(0, 65000) for _ in range(16)]
+    matrix = DiagonalMatrix(lst)
+    print(f'Исходная матрица с диагнальной адресацией:\n{matrix}\n')
+    matrix.bool_func_6(0, 1, 2)
+    print(f'Матрица после проведения логической функции f6 = !x1 * x2 + x1 * !x2 '
+          f'(x1 - 0й стобец, x2 - 1й столбец, f4 - 2й столбец):\n{matrix}')
+
+
+def test5():
+    print('\nТест 5 (логическая функция f9)\n')
+    lst = [randint(0, 65000) for _ in range(16)]
+    matrix = DiagonalMatrix(lst)
+    print(f'Исходная матрица с диагнальной адресацией:\n{matrix}\n')
+    matrix.bool_func_9(0, 1, 2)
+    print(f'Матрица после проведения логической функции f9 = x1 * x2 + !x1 * !x2 '
+          f'(x1 - 0й стобец, x2 - 1й столбец, f4 - 2й столбец):\n{matrix}')
+
+
+def test6():
+    print('\nТест 6 (логическая функция f11)\n')
+    lst = [randint(0, 65000) for _ in range(16)]
+    matrix = DiagonalMatrix(lst)
+    print(f'Исходная матрица с диагнальной адресацией:\n{matrix}\n')
+    matrix.bool_func_11(0, 1, 2)
+    print(f'Матрица после проведения логической функции f11 = x1 + !x2 '
+          f'(x1 - 0й стобец, x2 - 1й столбец, f4 - 2й столбец):\n{matrix}')
 
 
 def main():
-    lst = [randint(0, 256) for _ in range(16)]
-
-    lst = [45035, 223, 223, 63, 14, 80, 86, 239, 44, 207, 191, 75, 48, 3, 38, 174]
-    print(lst)
-    print_matrix(get_normal_matrix(lst))
-    print()
-
-    diagonal_matrix_bin = DiagonalMatrix(lst)
-    print_matrix(diagonal_matrix_bin.matrix)
-
-    assert [get_int(diagonal_matrix_bin[i]) for i in range(16)] == lst
-    print()
-
-    print_matrix(diagonal_matrix_bin.matrix)
-    print()
-    diagonal_matrix_bin.sort()
-    print_matrix(diagonal_matrix_bin.matrix)
-    print(lst)
-    print([get_int(diagonal_matrix_bin[i]) for i in range(16)])
-    print(sorted(lst)[::-1])
-    assert [get_int(diagonal_matrix_bin[i]) for i in range(16)] == sorted(lst)[::-1]
+    test1()
+    test2()
+    test3()
+    test4()
+    test5()
+    test6()
 
 
 if __name__ == '__main__':

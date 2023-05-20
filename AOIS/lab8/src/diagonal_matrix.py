@@ -1,4 +1,4 @@
-from typing import Tuple, List
+from typing import List, Iterator
 from src.utils import get_binary, sum_binary, compare
 
 
@@ -13,14 +13,24 @@ class DiagonalMatrix:
         self.matrix = matrix_bin
         self.size = size
 
-    def __getitem__(self, ind: int):
+    def __getitem__(self, ind: int) -> List[int]:
         return [self.matrix[(j + ind) % self.size][ind] for j in range(self.size)]
 
-    def fill(self, el: List[int], ind: int):
+    def __setitem__(self, ind: int, el: List[int]) -> None:
         for j in range(self.size):
             self.matrix[(ind + j) % self.size][ind] = el[j]
 
-    def sum(self, lst: List[int] = None):
+    def __iter__(self) -> Iterator[List[int]]:
+        for i in range(self.size):
+            yield self[i]
+
+    def __len__(self) -> int:
+        return self.size
+
+    def __str__(self) -> str:
+        return '\n'.join(' '.join([str(el) for el in line]) for line in self.matrix)
+
+    def sum(self, lst: List[int] = None) -> None:
         if lst is None or len(lst) != 3:
             lst = [1, 0, 0]
         for i in range(self.size):
@@ -28,27 +38,25 @@ class DiagonalMatrix:
             if el[:3] != lst:
                 continue
             el[11:] = sum_binary(el[3:7], el[7:11])
-            self.fill(el, i)
+            self[i] = el
             return
 
-    def sort(self):
+    def sort(self, reverse=True) -> None:
         for i in range(self.size):
             for j in range(i + 1, self.size):
-                if not compare(self[i], self[j]):
-                    first, second = self[i], self[j]
-                    self.fill(first, j)
-                    self.fill(second, i)
+                if (not compare(self[i], self[j]) and not reverse) or (compare(self[i], self[j]) and reverse):
+                    self[i], self[j] = self[j], self[i]
 
-    def func_4(self, ind_1, ind_2, ind_3):
-        self.fill([int(not self[ind_1][i] and self[ind_2][i]) for i in range(self.size)], ind_3)
+    def bool_func_4(self, ind_1, ind_2, ind_3):
+        self[ind_3] = [int(not self[ind_1][i] and self[ind_2][i]) for i in range(self.size)]
 
-    def func_6(self, ind_1, ind_2, ind_3):
-        self.fill([int((not self[ind_1][i] and self[ind_2][i]) or (self[ind_1][i] and not self[ind_2][i]))
-                   for i in range(self.size)], ind_3)
+    def bool_func_6(self, ind_1, ind_2, ind_3):
+        self[ind_3] = [int((not self[ind_1][i] and self[ind_2][i]) or (self[ind_1][i] and not self[ind_2][i]))
+                       for i in range(self.size)]
 
-    def func_9(self, ind_1, ind_2, ind_3):
-        self.fill([int((self[ind_1][i] and self[ind_2][i]) or (not self[ind_1][i] and not self[ind_2][i]))
-                   for i in range(self.size)], ind_3)
+    def bool_func_9(self, ind_1, ind_2, ind_3):
+        self[ind_3] = [int((self[ind_1][i] and self[ind_2][i]) or (not self[ind_1][i] and not self[ind_2][i]))
+                       for i in range(self.size)]
 
-    def func_11(self, ind_1, ind_2, ind_3):
-        self.fill([int(self[ind_1][i] and not self[ind_2][i]) for i in range(self.size)], ind_3)
+    def bool_func_11(self, ind_1, ind_2, ind_3):
+        self[ind_3] = [int(self[ind_1][i] or not self[ind_2][i]) for i in range(self.size)]
