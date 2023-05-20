@@ -1,5 +1,3 @@
-from src.match_search import match_search
-from src.boolean_search import boolean_search
 from src.utils import *
 from src.diagonal_matrix import DiagonalMatrix
 

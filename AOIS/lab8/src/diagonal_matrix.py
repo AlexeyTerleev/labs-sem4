@@ -32,7 +32,21 @@ class DiagonalMatrix:
             return
 
     def compare(self, ind_1: int, ind_2: int):
-        ...
+        for pair in zip(self.matrix[ind_1], self.matrix[ind_2]):
+            if pair[0] > pair[1]:
+                return True
+            elif pair[1] < pair[0]:
+                return False
+        return False
+
+    def sort(self):
+        for i in range(self.size):
+            for j in range(i + 1, self.size):
+                comparison_result = self.compare(i, j)
+                if not comparison_result:
+                    tmp = self[i]
+                    self.fill(self[j], i)
+                    self.fill(tmp, j)
 
     def func_4(self, ind_1, ind_2, ind_3):
         self.fill([not self[ind_1][i] and self[ind_2][i] for i in range(self.size)], ind_3)
